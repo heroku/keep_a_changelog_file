@@ -1,0 +1,14 @@
+[package]
+name = "keep-a-changelog"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chrono = "0.4"
+indexmap = "2"
+lazy_static = "1"
+markdown = "1.0.0-alpha.14"
+regex = "1"
+semver = "1"
+thiserror = "1"
+uriparse = "0.6"
