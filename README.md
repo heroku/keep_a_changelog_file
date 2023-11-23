@@ -5,7 +5,7 @@
 [Build Status]: https://img.shields.io/github/actions/workflow/status/colincasey/keep_a_changelog/ci.yml?branch=main
 [ci]: https://github.com/colincasey/keep_a_changelog/actions/workflows/ci.yml?query=branch%3Amain
 [Docs]: https://img.shields.io/docsrs/keep_a_changelog
-[docs.rs]: https://docs.rs/keep_a_changelog/latest/libcnb/
+[docs.rs]: https://docs.rs/keep_a_changelog/latest/keep_a_changelog/
 [Latest Version]: https://img.shields.io/crates/v/keep_a_changelog.svg
 [crates.io]: https://crates.io/crates/keep_a_changelog
 [MSRV]: https://img.shields.io/badge/MSRV-rustc_1.74+-lightgray.svg
