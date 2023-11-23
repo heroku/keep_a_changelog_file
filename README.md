@@ -2,12 +2,12 @@
 
 [![Build Status]][ci] [![Docs]][docs.rs] [![Latest Version]][crates.io] [![MSRV]][install-rust]
 
-[Build Status]: https://img.shields.io/github/actions/workflow/status/heroku/libcnb.rs/ci.yml?branch=main
-[ci]: https://github.com/heroku/libcnb.rs/actions/workflows/ci.yml?query=branch%3Amain
-[Docs]: https://img.shields.io/docsrs/libcnb
-[docs.rs]: https://docs.rs/libcnb/latest/libcnb/
-[Latest Version]: https://img.shields.io/crates/v/libcnb.svg
-[crates.io]: https://crates.io/crates/libcnb
+[Build Status]: https://img.shields.io/github/actions/workflow/status/colincasey/keep_a_changelog/ci.yml?branch=main
+[ci]: https://github.com/colincasey/keep_a_changelog/actions/workflows/ci.yml?query=branch%3Amain
+[Docs]: https://img.shields.io/docsrs/keep_a_changelog
+[docs.rs]: https://docs.rs/keep_a_changelog/latest/libcnb/
+[Latest Version]: https://img.shields.io/crates/v/keep_a_changelog.svg
+[crates.io]: https://crates.io/crates/keep_a_changelog
 [MSRV]: https://img.shields.io/badge/MSRV-rustc_1.74+-lightgray.svg
 [install-rust]: https://www.rust-lang.org/tools/install
 
