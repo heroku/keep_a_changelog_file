@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+
+defaults:
+  run:
+    # Setting an explicit bash shell ensures GitHub Actions enables pipefail mode too,
+    # ratherthan only error on exit (improving failure UX when pipes are used). See:
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell
+    shell: bash
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update Rust toolchain
+        run: rustup update
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2.7.1
+
+      - name: Clippy
+        run: cargo clippy --all-targets --all-features -- --deny warnings
+
+      - name: rustfmt
+        run: cargo fmt -- --check
+
+      - name: Check docs
+        run: RUSTDOCFLAGS="-D warnings" cargo doc --all-features --no-deps
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update Rust toolchain
+        run: rustup update
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2.7.1
+
+      - name: Test
+        run: cargo test --all-features
