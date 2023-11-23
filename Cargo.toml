@@ -1,0 +1,30 @@
+[package]
+name = "keep_a_changelog"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.74"
+
+[dependencies]
+chrono = "0.4"
+indexmap = "2"
+lazy_static = "1"
+markdown = "1.0.0-alpha.14"
+regex = "1"
+semver = "1"
+thiserror = "1"
+uriparse = "0.6"
+
+[lints.rust]
+unused_crate_dependencies = "warn"
+unreachable_pub = "warn"
+unsafe_code = "warn"
+missing_docs = "warn"
+
+[lints.clippy]
+panic_in_result_fn = "warn"
+pedantic = "warn"
+unwrap_used = "warn"
+enum_variant_names = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+module_name_repetitions = "allow"
