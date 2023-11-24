@@ -122,7 +122,7 @@ impl Display for Changelog {
             writeln!(f)?;
         }
         if let Some(link) = &self.unreleased.link {
-            write!(f, "[unreleased]: {link}")?;
+            write!(f, "\n[unreleased]: {link}")?;
         }
         for release in self.releases.0.values() {
             if let Some(link) = &release.link {
