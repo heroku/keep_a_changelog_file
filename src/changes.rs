@@ -5,6 +5,14 @@ use indexmap::IndexMap;
 #[derive(Debug, Eq, PartialEq, Default, Clone)]
 pub struct Changes(pub(crate) IndexMap<ChangeGroup, Vec<String>>);
 
+impl Changes {
+    /// Returns true if there are no changes.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.0.iter().all(|(_, items)| items.is_empty())
+    }
+}
+
 impl<'a> IntoIterator for &'a Changes {
     type Item = (&'a ChangeGroup, &'a Vec<String>);
 
