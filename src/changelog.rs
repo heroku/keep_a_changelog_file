@@ -1,6 +1,8 @@
 use crate::changes::Changes;
 use crate::releases::Releases;
-use crate::{ChangeGroup, Release, ReleaseDate, ReleaseLink, ReleaseTag, Unreleased, Version};
+use crate::{
+    ChangeGroup, Release, ReleaseDate, ReleaseLink, ReleaseTag, ReleaseVersion, Unreleased,
+};
 use indexmap::IndexMap;
 use lazy_static::lazy_static;
 use markdown::mdast::Node;
@@ -42,7 +44,7 @@ impl Changelog {
         &mut self,
         promote_options: &PromoteOptions,
     ) -> Result<(), PromoteUnreleasedError> {
-        if self.releases.0.contains_key(&promote_options.version) {
+        if self.releases.contains_version(&promote_options.version) {
             Err(PromoteUnreleasedError(promote_options.version.clone()))?;
         }
 
@@ -59,11 +61,13 @@ impl Changelog {
 
         self.unreleased.changes = Changes::default();
 
-        let mut new_releases: IndexMap<Version, Release> =
+        let mut new_releases: IndexMap<ReleaseVersion, Release> =
             IndexMap::from([(new_release.version.clone(), new_release)]);
-        new_releases.extend(self.releases.clone().0);
+        for (release_version, release) in self.releases.clone() {
+            new_releases.insert(release_version, release);
+        }
 
-        self.releases = Releases(new_releases);
+        self.releases = Releases::from_iter(new_releases);
 
         Ok(())
     }
@@ -82,7 +86,7 @@ impl Display for Changelog {
         write!(f, "{CHANGELOG_HEADER}")?;
 
         write!(f, "\n\n## [Unreleased]")?;
-        for (change_group, items) in &self.unreleased.changes.0 {
+        for (change_group, items) in &self.unreleased.changes {
             write!(
                 f,
                 "\n\n### {change_group}\n\n{}",
@@ -94,12 +98,14 @@ impl Display for Changelog {
             )?;
         }
 
-        for release in self.releases.0.values() {
+        let mut has_release_with_link = false;
+
+        for (_, release) in &self.releases {
             write!(f, "\n\n## [{}] - {}", release.version, release.date)?;
             if let Some(tag) = &release.tag {
                 write!(f, " [{tag}]")?;
             }
-            for (change_group, items) in &release.changes.0 {
+            for (change_group, items) in &release.changes {
                 write!(
                     f,
                     "\n\n### {change_group}\n\n{}",
@@ -110,21 +116,20 @@ impl Display for Changelog {
                         .join("\n")
                 )?;
             }
+            if release.link.is_some() {
+                has_release_with_link = true;
+            }
         }
 
-        if self.unreleased.link.is_some()
-            || self
-                .releases
-                .0
-                .values()
-                .any(|release| release.link.is_some())
-        {
+        if self.unreleased.link.is_some() || has_release_with_link {
             writeln!(f)?;
         }
+
         if let Some(link) = &self.unreleased.link {
             write!(f, "\n[unreleased]: {link}")?;
         }
-        for release in self.releases.0.values() {
+
+        for (_, release) in &self.releases {
             if let Some(link) = &release.link {
                 let version = &release.version;
                 write!(f, "\n[{version}]: {link}")?;
@@ -138,12 +143,12 @@ impl Display for Changelog {
 /// Error when promoting unreleased to a version that already exists in the changelog.
 #[derive(Debug, Error)]
 #[error("Could not promote unreleased to release version {0} because it that version already exists in the changelog")]
-pub struct PromoteUnreleasedError(Version);
+pub struct PromoteUnreleasedError(ReleaseVersion);
 
 /// Options for customizing the details of a promoted release.
 #[derive(Debug)]
 pub struct PromoteOptions {
-    version: Version,
+    version: ReleaseVersion,
     date: Option<ReleaseDate>,
     tag: Option<ReleaseTag>,
     link: Option<ReleaseLink>,
@@ -152,7 +157,7 @@ pub struct PromoteOptions {
 impl PromoteOptions {
     /// Construct a new [`PromoteOptions`] instance.
     #[must_use]
-    pub fn new(version: Version) -> Self {
+    pub fn new(version: ReleaseVersion) -> Self {
         Self {
             version,
             date: None,
@@ -186,13 +191,13 @@ impl PromoteOptions {
 #[derive(Debug)]
 enum ReleaseHeaderType {
     Unreleased,
-    Versioned(Version, ReleaseDate, Option<ReleaseTag>),
+    Versioned(ReleaseVersion, ReleaseDate, Option<ReleaseTag>),
 }
 
 #[derive(Debug)]
 enum ReleaseLinkType {
     Unreleased(ReleaseLink),
-    Versioned(Version, ReleaseLink),
+    Versioned(ReleaseVersion, ReleaseLink),
 }
 
 /// An error that occurred during changelog parsing.
@@ -361,7 +366,7 @@ fn parse_changelog(input: &str) -> Result<Changelog, ParseChangelogErrorInternal
                 match release_entry_type {
                     ReleaseHeaderType::Unreleased => {
                         unreleased = Some(Unreleased {
-                            changes: Changes(changes),
+                            changes: Changes::from_iter(changes.into_iter()),
                             link: None,
                         });
                     }
@@ -373,7 +378,7 @@ fn parse_changelog(input: &str) -> Result<Changelog, ParseChangelogErrorInternal
                                 date,
                                 tag,
                                 link: None,
-                                changes: Changes(changes),
+                                changes: Changes::from_iter(changes.into_iter()),
                             },
                         );
                     }
@@ -409,7 +414,7 @@ fn parse_changelog(input: &str) -> Result<Changelog, ParseChangelogErrorInternal
 
     Ok(Changelog {
         unreleased: unreleased.unwrap_or_default(),
-        releases: Releases(releases),
+        releases: Releases::from_iter(releases),
     })
 }
 
@@ -447,7 +452,7 @@ fn parse_release_heading(
     }
 
     if let Some(captures) = VERSIONED_RELEASE_HEADER.captures(&heading) {
-        let version = captures["version"].parse::<Version>().map_err(|e| {
+        let release_version = captures["version"].parse::<ReleaseVersion>().map_err(|e| {
             ParseChangelogErrorInternal::Version(
                 heading.clone(),
                 captures["version"].to_string(),
@@ -479,7 +484,7 @@ fn parse_release_heading(
             )
         })?;
 
-        let date = match chrono::offset::TimeZone::with_ymd_and_hms(
+        let release_date = match chrono::offset::TimeZone::with_ymd_and_hms(
             &chrono::Utc,
             year,
             month,
@@ -494,7 +499,7 @@ fn parse_release_heading(
                 month,
                 day,
             )),
-            chrono::LocalResult::Single(datetime) => Ok(ReleaseDate(datetime)),
+            chrono::LocalResult::Single(datetime) => Ok(datetime.into()),
             chrono::LocalResult::Ambiguous(_, _) => {
                 Err(ParseChangelogErrorInternal::AmbiguousReleaseDate(
                     heading.clone(),
@@ -505,7 +510,7 @@ fn parse_release_heading(
             }
         }?;
 
-        let tag = if let Some(tag_value) = captures.name("tag") {
+        let release_tag = if let Some(tag_value) = captures.name("tag") {
             match tag_value.as_str().to_lowercase().as_str() {
                 "no changes" => Ok(Some(ReleaseTag::NoChanges)),
                 "yanked" => Ok(Some(ReleaseTag::Yanked)),
@@ -518,7 +523,11 @@ fn parse_release_heading(
             None
         };
 
-        Ok(ReleaseHeaderType::Versioned(version, date, tag))
+        Ok(ReleaseHeaderType::Versioned(
+            release_version,
+            release_date,
+            release_tag,
+        ))
     } else {
         Err(ParseChangelogErrorInternal::NoMatchForReleaseHeading(
             heading,
@@ -542,7 +551,7 @@ fn parse_release_link(version: &str, url: &str) -> Option<ReleaseLinkType> {
     let parsed_url = url.parse();
     if version.to_lowercase() == UNRELEASED {
         parsed_url.map(ReleaseLinkType::Unreleased).ok()
-    } else if let Ok(version) = version.parse::<Version>() {
+    } else if let Ok(version) = version.parse::<ReleaseVersion>() {
         parsed_url
             .map(|uri| ReleaseLinkType::Versioned(version, uri))
             .ok()
@@ -617,7 +626,7 @@ mod test {
         assert_eq!(
             changelog
                 .releases
-                .get_version(&"0.1.2".parse::<Version>().unwrap())
+                .get_version(&"0.1.2".parse::<ReleaseVersion>().unwrap())
                 .unwrap()
                 .tag,
             Some(ReleaseTag::Yanked)

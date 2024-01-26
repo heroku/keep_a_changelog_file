@@ -7,9 +7,9 @@ mod release;
 mod release_date;
 mod release_link;
 mod release_tag;
+mod release_version;
 mod releases;
 mod unreleased;
-mod version;
 
 pub use crate::change_group::ChangeGroup;
 pub use crate::changelog::Changelog;
@@ -23,10 +23,10 @@ pub use crate::release_date::ReleaseDate;
 pub use crate::release_link::ParseReleaseLinkError;
 pub use crate::release_link::ReleaseLink;
 pub use crate::release_tag::ReleaseTag;
+pub use crate::release_version::ParseVersionError;
+pub use crate::release_version::ReleaseVersion;
 pub use crate::releases::Releases;
 pub use crate::unreleased::Unreleased;
-pub use crate::version::ParseVersionError;
-pub use crate::version::Version;
 
 #[cfg(test)]
 mod test {
@@ -36,7 +36,6 @@ mod test {
     use crate::changes::Changes;
     use crate::release::Release;
     use crate::unreleased::Unreleased;
-    use indexmap::IndexMap;
 
     #[test]
     fn test_unreleased() {
@@ -64,7 +63,7 @@ mod test {
                 .parse()
                 .unwrap()),
             tag: None,
-            changes: Changes(IndexMap::from_iter([
+            changes: Changes::from_iter([
                 (
                     ChangeGroup::Added,
                     ["Arabic translation (#444).",
@@ -119,13 +118,13 @@ mod test {
                         .map(ToString::to_string)
                         .to_vec(),
                 ),
-            ]))
+            ])
         };
 
         assert_eq!(
             changelog
                 .releases
-                .get_version(&"1.1.1".parse::<Version>().unwrap())
+                .get_version(&"1.1.1".parse::<ReleaseVersion>().unwrap())
                 .unwrap(),
             &release_v1_1_1
         );
@@ -143,7 +142,7 @@ mod test {
                     .unwrap(),
             ),
             tag: None,
-            changes: Changes(IndexMap::from_iter([
+            changes: Changes::from_iter([
                 (
                     ChangeGroup::Added,
                     [
@@ -163,12 +162,12 @@ mod test {
                     .map(ToString::to_string)
                     .to_vec(),
                 ),
-            ])),
+            ]),
         };
         assert_eq!(
             changelog
                 .releases
-                .get_version(&"1.1.0".parse::<Version>().unwrap())
+                .get_version(&"1.1.0".parse::<ReleaseVersion>().unwrap())
                 .unwrap(),
             &release_v1_1_0
         );
@@ -186,7 +185,7 @@ mod test {
                     .unwrap(),
             ),
             tag: None,
-            changes: Changes(IndexMap::from_iter([
+            changes: Changes::from_iter([
                 (
                     ChangeGroup::Added,
                     [
@@ -245,12 +244,12 @@ mod test {
                         .map(ToString::to_string)
                         .to_vec(),
                 ),
-            ])),
+            ]),
         };
         assert_eq!(
             changelog
                 .releases
-                .get_version(&"1.0.0".parse::<Version>().unwrap())
+                .get_version(&"1.0.0".parse::<ReleaseVersion>().unwrap())
                 .unwrap(),
             &release_v1_0_0
         );
@@ -268,7 +267,7 @@ mod test {
                     .unwrap(),
             ),
             tag: None,
-            changes: Changes(IndexMap::from_iter([(
+            changes: Changes::from_iter([(
                 ChangeGroup::Added,
                 [
                     "RU translation from [@aishek](https://github.com/aishek).",
@@ -277,12 +276,12 @@ mod test {
                 ]
                 .map(ToString::to_string)
                 .to_vec(),
-            )])),
+            )]),
         };
         assert_eq!(
             changelog
                 .releases
-                .get_version(&"0.3.0".parse::<Version>().unwrap())
+                .get_version(&"0.3.0".parse::<ReleaseVersion>().unwrap())
                 .unwrap(),
             &release_v0_3_0
         );
@@ -300,7 +299,7 @@ mod test {
                     .unwrap(),
             ),
             tag: None,
-            changes: Changes(IndexMap::from_iter([
+            changes: Changes::from_iter([
                 (
                     ChangeGroup::Changed,
                     [
@@ -309,12 +308,12 @@ mod test {
                         .map(ToString::to_string)
                         .to_vec(),
                 ),
-            ])),
+            ]),
         };
         assert_eq!(
             changelog
                 .releases
-                .get_version(&"0.2.0".parse::<Version>().unwrap())
+                .get_version(&"0.2.0".parse::<ReleaseVersion>().unwrap())
                 .unwrap(),
             &release_v0_2_0
         );
@@ -332,7 +331,7 @@ mod test {
                     .unwrap(),
             ),
             tag: None,
-            changes: Changes(IndexMap::from_iter([
+            changes: Changes::from_iter([
                 (
                     ChangeGroup::Added,
                     ["Answer \"Should you ever rewrite a change log?\"."]
@@ -348,12 +347,12 @@ mod test {
                     .map(ToString::to_string)
                     .to_vec(),
                 ),
-            ])),
+            ]),
         };
         assert_eq!(
             changelog
                 .releases
-                .get_version(&"0.1.0".parse::<Version>().unwrap())
+                .get_version(&"0.1.0".parse::<ReleaseVersion>().unwrap())
                 .unwrap(),
             &release_v0_1_0
         );
@@ -371,7 +370,7 @@ mod test {
                     .unwrap(),
             ),
             tag: None,
-            changes: Changes(IndexMap::from_iter([
+            changes: Changes::from_iter([
                 (
                     ChangeGroup::Changed,
                     [
@@ -390,12 +389,12 @@ mod test {
                     .map(ToString::to_string)
                     .to_vec(),
                 ),
-            ])),
+            ]),
         };
         assert_eq!(
             changelog
                 .releases
-                .get_version(&"0.0.8".parse::<Version>().unwrap())
+                .get_version(&"0.0.8".parse::<ReleaseVersion>().unwrap())
                 .unwrap(),
             &release_v0_0_8
         );
@@ -413,7 +412,7 @@ mod test {
                     .unwrap(),
             ),
             tag: None,
-            changes: Changes(IndexMap::from_iter([
+            changes: Changes::from_iter([
                 (
                     ChangeGroup::Added,
                     ["Link, and make it obvious that date format is ISO 8601."]
@@ -432,12 +431,12 @@ mod test {
                         .map(ToString::to_string)
                         .to_vec(),
                 ),
-            ])),
+            ]),
         };
         assert_eq!(
             changelog
                 .releases
-                .get_version(&"0.0.7".parse::<Version>().unwrap())
+                .get_version(&"0.0.7".parse::<ReleaseVersion>().unwrap())
                 .unwrap(),
             &release_v0_0_7
         );
@@ -455,17 +454,17 @@ mod test {
                     .unwrap(),
             ),
             tag: None,
-            changes: Changes(IndexMap::from_iter([(
+            changes: Changes::from_iter([(
                 ChangeGroup::Added,
                 ["README section on \"yanked\" releases."]
                     .map(ToString::to_string)
                     .to_vec(),
-            )])),
+            )]),
         };
         assert_eq!(
             changelog
                 .releases
-                .get_version(&"0.0.6".parse::<Version>().unwrap())
+                .get_version(&"0.0.6".parse::<ReleaseVersion>().unwrap())
                 .unwrap(),
             &release_v0_0_6
         );
@@ -483,7 +482,7 @@ mod test {
                     .unwrap(),
             ),
             tag: None,
-            changes: Changes(IndexMap::from_iter([(
+            changes: Changes::from_iter([(
                 ChangeGroup::Added,
                 [
                     "Markdown links to version tags on release headings.",
@@ -491,12 +490,12 @@ mod test {
                 ]
                 .map(ToString::to_string)
                 .to_vec(),
-            )])),
+            )]),
         };
         assert_eq!(
             changelog
                 .releases
-                .get_version(&"0.0.5".parse::<Version>().unwrap())
+                .get_version(&"0.0.5".parse::<ReleaseVersion>().unwrap())
                 .unwrap(),
             &release_v0_0_5
         );
@@ -514,7 +513,7 @@ mod test {
                     .unwrap(),
             ),
             tag: None,
-            changes: Changes(IndexMap::from_iter([
+            changes: Changes::from_iter([
                 (
                     ChangeGroup::Added,
                     [
@@ -539,12 +538,12 @@ mod test {
                         .map(ToString::to_string)
                         .to_vec(),
                 )
-            ])),
+            ]),
         };
         assert_eq!(
             changelog
                 .releases
-                .get_version(&"0.0.4".parse::<Version>().unwrap())
+                .get_version(&"0.0.4".parse::<ReleaseVersion>().unwrap())
                 .unwrap(),
             &release_v0_0_4
         );
@@ -562,17 +561,17 @@ mod test {
                     .unwrap(),
             ),
             tag: None,
-            changes: Changes(IndexMap::from_iter([(
+            changes: Changes::from_iter([(
                 ChangeGroup::Added,
                 ["\"Why should I care?\" section mentioning The Changelog podcast."]
                     .map(ToString::to_string)
                     .to_vec(),
-            )])),
+            )]),
         };
         assert_eq!(
             changelog
                 .releases
-                .get_version(&"0.0.3".parse::<Version>().unwrap())
+                .get_version(&"0.0.3".parse::<ReleaseVersion>().unwrap())
                 .unwrap(),
             &release_v0_0_3
         );
@@ -590,17 +589,17 @@ mod test {
                     .unwrap(),
             ),
             tag: None,
-            changes: Changes(IndexMap::from_iter([(
+            changes: Changes::from_iter([(
                 ChangeGroup::Added,
                 ["Explanation of the recommended reverse chronological release ordering."]
                     .map(ToString::to_string)
                     .to_vec(),
-            )])),
+            )]),
         };
         assert_eq!(
             changelog
                 .releases
-                .get_version(&"0.0.2".parse::<Version>().unwrap())
+                .get_version(&"0.0.2".parse::<ReleaseVersion>().unwrap())
                 .unwrap(),
             &release_v0_0_2
         );
@@ -618,7 +617,7 @@ mod test {
                     .unwrap(),
             ),
             tag: None,
-            changes: Changes(IndexMap::from_iter([
+            changes: Changes::from_iter([
                 (
                     ChangeGroup::Added,
                     [
@@ -631,12 +630,12 @@ mod test {
                         .map(ToString::to_string)
                         .to_vec(),
                 ),
-            ])),
+            ]),
         };
         assert_eq!(
             changelog
                 .releases
-                .get_version(&"0.0.1".parse::<Version>().unwrap())
+                .get_version(&"0.0.1".parse::<ReleaseVersion>().unwrap())
                 .unwrap(),
             &release_v0_0_1
         );

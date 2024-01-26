@@ -28,8 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
     assert_eq!(
         changelog.to_string(),
-        format!(
-            "\
+        "\
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -46,7 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 
 - Feature Y will be removed from the next major release.\n"
-        )
+            .to_string()
     );
 }
 
@@ -84,8 +83,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
     assert_eq!(
         changelog.to_string(),
-        format!(
-            "\
+        "\
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -106,7 +104,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Feature Y will be removed from the next major release.
 
 [0.0.1]: https://github.com/my-org/my-project/releases/v0.0.1\n"
-        )
+            .to_string()
     );
 }
 

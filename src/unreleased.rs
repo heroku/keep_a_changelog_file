@@ -15,10 +15,6 @@ pub struct Unreleased {
 impl Unreleased {
     /// Adds the given `item` to the unreleased section under the provided `change_group` heading.
     pub fn add(&mut self, change_group: ChangeGroup, item: impl Into<String>) {
-        self.changes
-            .0
-            .entry(change_group)
-            .or_default()
-            .push(item.into());
+        self.changes.add(change_group, item);
     }
 }
