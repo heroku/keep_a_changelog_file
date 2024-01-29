@@ -1,4 +1,6 @@
 use std::fmt::{Display, Formatter};
+use std::str::FromStr;
+use thiserror::Error;
 
 /// A release tag can be used to indicate:
 /// - If a release was yanked due to a serious bug or security issue.
@@ -17,6 +19,22 @@ impl Display for ReleaseTag {
         match self {
             ReleaseTag::Yanked => write!(f, "YANKED"),
             ReleaseTag::NoChanges => write!(f, "NO CHANGES"),
+        }
+    }
+}
+
+#[derive(Debug, Error)]
+#[error("Could not parse release tag '{0}'\nExpected: YANKED | NO CHANGES")]
+pub struct ParseReleaseTagError(String);
+
+impl FromStr for ReleaseTag {
+    type Err = ParseReleaseTagError;
+
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        match value.to_lowercase().as_str() {
+            "no changes" => Ok(ReleaseTag::NoChanges),
+            "yanked" => Ok(ReleaseTag::Yanked),
+            _ => Err(ParseReleaseTagError(value.to_string())),
         }
     }
 }

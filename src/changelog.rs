@@ -1,7 +1,10 @@
+use crate::change_group::ParseChangeGroupError;
 use crate::changes::Changes;
+use crate::release_tag::ParseReleaseTagError;
 use crate::releases::Releases;
 use crate::{
-    ChangeGroup, Release, ReleaseDate, ReleaseLink, ReleaseTag, ReleaseVersion, Unreleased,
+    ChangeGroup, ParseReleaseDateError, Release, ReleaseDate, ReleaseLink, ReleaseTag,
+    ReleaseVersion, Unreleased,
 };
 use indexmap::IndexMap;
 use lazy_static::lazy_static;
@@ -10,7 +13,6 @@ use markdown::{to_mdast, ParseOptions};
 use regex::Regex;
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
-use std::num::ParseIntError;
 use std::str::FromStr;
 use thiserror::Error;
 
@@ -210,34 +212,20 @@ enum ParseChangelogErrorInternal {
     #[error("Could not parse changelog as markdown\nError: {0}")]
     Markdown(String),
 
-    #[error("Could not parse change group type from changelog\nExpected: Added | Changed | Deprecated | Fixed | Removed | Security\nValue: {0}")]
-    InvalidChangeGroup(String),
+    #[error("Could not parse change group type from changelog - {0}\nError: {1}")]
+    InvalidChangeGroup(String, #[source] ParseChangeGroupError),
 
     #[error("Release header did not match the expected format\nExpected: [Unreleased] | [<version>] - <yyyy>-<mm>-<dd> | [<version>] - <yyyy>-<mm>-<dd> [<tag>]\nValue: {0}")]
     NoMatchForReleaseHeading(String),
 
-    #[error("Invalid semver version in release - {0}\nValue: {1}\nError: {2}")]
-    Version(String, String, String),
+    #[error("Invalid version in release entry - {0}\nValue: {1}\nError: {2}")]
+    InvalidVersion(String, String, String),
 
-    #[error("Invalid year in release - {0}\nValue: {1}\nError: {2}")]
-    ReleaseEntryYear(String, String, #[source] ParseIntError),
+    #[error("Invalid date in release entry - {0}\nValue: {1}\nError: {2}")]
+    InvalidReleaseDate(String, String, #[source] ParseReleaseDateError),
 
-    #[error("Invalid month in release - {0}\nValue: {1}\nError: {2}")]
-    ReleaseEntryMonth(String, String, #[source] ParseIntError),
-
-    #[error("Invalid day in release entry - {0}\nValue: {1}\nError: {2}")]
-    ReleaseEntryDay(String, String, #[source] ParseIntError),
-
-    #[error("Invalid date in release entry - {0}\nValue: {1}-{2}-{3}")]
-    InvalidReleaseDate(String, i32, u32, u32),
-
-    #[error("Ambiguous date in release entry - {0}\nValue: {1}-{2}-{3}")]
-    AmbiguousReleaseDate(String, i32, u32, u32),
-
-    #[error(
-        "Could not parse release tag from changelog\nExpected: YANKED | NO CHANGES\nValue: {1}"
-    )]
-    InvalidReleaseTag(String, String),
+    #[error("Invalid tag in release entry - {0}\nValue: {1}\nError: {2}")]
+    InvalidReleaseTag(String, String, #[source] ParseReleaseTagError),
 }
 
 // Traverses the changelog written in markdown which has flattened entries that need to be parsed
@@ -302,8 +290,15 @@ fn parse_changelog(input: &str) -> Result<Changelog, ParseChangelogErrorInternal
 
                 while root_iter.peek().is_some_and(&is_change_group_heading) {
                     if let Some(change_group_node) = root_iter.next() {
-                        let change_group =
-                            parse_change_group_heading(change_group_node.to_string())?;
+                        let change_group = change_group_node
+                            .to_string()
+                            .parse::<ChangeGroup>()
+                            .map_err(|e| {
+                                ParseChangelogErrorInternal::InvalidChangeGroup(
+                                    change_group_node.to_string(),
+                                    e,
+                                )
+                            })?;
 
                         while root_iter.peek().is_some_and(is_list_node) {
                             if let Some(list_node) = root_iter.next() {
@@ -385,10 +380,10 @@ fn parse_changelog(input: &str) -> Result<Changelog, ParseChangelogErrorInternal
                 }
             } else if let Some(definition_node) = root_iter.next_if(is_definition) {
                 if let Node::Definition(definition) = definition_node {
-                    if let Some(release_link) =
-                        parse_release_link(&definition.identifier, &definition.url)
+                    if let Some(release_link_type) =
+                        parse_release_link_type(&definition.identifier, &definition.url)
                     {
-                        match release_link {
+                        match release_link_type {
                             ReleaseLinkType::Unreleased(uri) => unreleased_link = Some(uri),
                             ReleaseLinkType::Versioned(version, uri) => {
                                 release_links.insert(version, uri);
@@ -429,17 +424,14 @@ fn is_heading_of_depth(depth: u8) -> impl Fn(&Node) -> bool {
 
 const UNRELEASED: &str = "unreleased";
 const VERSION_CAPTURE: &str = r"(?P<version>\d+\.\d+\.\d+)";
-const YEAR_CAPTURE: &str = r"(?P<year>\d{4})";
-const MONTH_CAPTURE: &str = r"(?P<month>\d{2})";
-const DAY_CAPTURE: &str = r"(?P<day>\d{2})";
+const RELEASE_DATE_CAPTURE: &str = r"(?P<release_date>\d{4}-\d{2}-\d{2})";
 const TAG_CAPTURE: &str = r"(?P<tag>.+)";
 
 lazy_static! {
     static ref UNRELEASED_HEADER: Regex =
         Regex::new(&format!(r"(?i)^\[?{UNRELEASED}]?$")).expect("Should be a valid regex");
-
     static ref VERSIONED_RELEASE_HEADER: Regex = Regex::new(&format!(
-        r"^\[?{VERSION_CAPTURE}]?\s+-\s+{YEAR_CAPTURE}[-/]{MONTH_CAPTURE}[-/]{DAY_CAPTURE}(?:\s+\[{TAG_CAPTURE}])?$"
+        r"^\[?{VERSION_CAPTURE}]?\s+-\s+{RELEASE_DATE_CAPTURE}(?:\s+\[{TAG_CAPTURE}])?$"
     ))
     .expect("Should be a valid regex");
 }
@@ -453,72 +445,31 @@ fn parse_release_heading(
 
     if let Some(captures) = VERSIONED_RELEASE_HEADER.captures(&heading) {
         let release_version = captures["version"].parse::<ReleaseVersion>().map_err(|e| {
-            ParseChangelogErrorInternal::Version(
+            ParseChangelogErrorInternal::InvalidVersion(
                 heading.clone(),
                 captures["version"].to_string(),
                 e.to_string(),
             )
         })?;
 
-        let year = captures["year"].parse::<i32>().map_err(|e| {
-            ParseChangelogErrorInternal::ReleaseEntryYear(
-                heading.clone(),
-                captures["year"].to_string(),
-                e,
-            )
-        })?;
-
-        let month = captures["month"].parse::<u32>().map_err(|e| {
-            ParseChangelogErrorInternal::ReleaseEntryMonth(
-                heading.clone(),
-                captures["month"].to_string(),
-                e,
-            )
-        })?;
-
-        let day = captures["day"].parse::<u32>().map_err(|e| {
-            ParseChangelogErrorInternal::ReleaseEntryDay(
-                heading.clone(),
-                captures["day"].to_string(),
-                e,
-            )
-        })?;
-
-        let release_date = match chrono::offset::TimeZone::with_ymd_and_hms(
-            &chrono::Utc,
-            year,
-            month,
-            day,
-            0,
-            0,
-            0,
-        ) {
-            chrono::LocalResult::None => Err(ParseChangelogErrorInternal::InvalidReleaseDate(
-                heading.clone(),
-                year,
-                month,
-                day,
-            )),
-            chrono::LocalResult::Single(datetime) => Ok(datetime.into()),
-            chrono::LocalResult::Ambiguous(_, _) => {
-                Err(ParseChangelogErrorInternal::AmbiguousReleaseDate(
+        let release_date = captures["release_date"]
+            .parse::<ReleaseDate>()
+            .map_err(|e| {
+                ParseChangelogErrorInternal::InvalidReleaseDate(
                     heading.clone(),
-                    year,
-                    month,
-                    day,
-                ))
-            }
-        }?;
+                    captures["release_date"].to_string(),
+                    e,
+                )
+            })?;
 
         let release_tag = if let Some(tag_value) = captures.name("tag") {
-            match tag_value.as_str().to_lowercase().as_str() {
-                "no changes" => Ok(Some(ReleaseTag::NoChanges)),
-                "yanked" => Ok(Some(ReleaseTag::Yanked)),
-                _ => Err(ParseChangelogErrorInternal::InvalidReleaseTag(
+            Some(tag_value.as_str().parse::<ReleaseTag>().map_err(|e| {
+                ParseChangelogErrorInternal::InvalidReleaseTag(
                     heading.clone(),
-                    captures["tag"].to_string(),
-                )),
-            }?
+                    tag_value.as_str().to_string(),
+                    e,
+                )
+            })?)
         } else {
             None
         };
@@ -535,19 +486,7 @@ fn parse_release_heading(
     }
 }
 
-fn parse_change_group_heading(heading: String) -> Result<ChangeGroup, ParseChangelogErrorInternal> {
-    match heading.trim().to_lowercase().as_str() {
-        "added" => Ok(ChangeGroup::Added),
-        "changed" => Ok(ChangeGroup::Changed),
-        "deprecated" => Ok(ChangeGroup::Deprecated),
-        "removed" => Ok(ChangeGroup::Removed),
-        "fixed" => Ok(ChangeGroup::Fixed),
-        "security" => Ok(ChangeGroup::Security),
-        _ => Err(ParseChangelogErrorInternal::InvalidChangeGroup(heading)),
-    }
-}
-
-fn parse_release_link(version: &str, url: &str) -> Option<ReleaseLinkType> {
+fn parse_release_link_type(version: &str, url: &str) -> Option<ReleaseLinkType> {
     let parsed_url = url.parse();
     if version.to_lowercase() == UNRELEASED {
         parsed_url.map(ReleaseLinkType::Unreleased).ok()
@@ -590,7 +529,7 @@ mod test {
 - Some change        
         "
         ));
-        assert_err_matches!(changelog, ParseChangelogErrorInternal::InvalidChangeGroup(group) if group == "Invalid");
+        assert_err_matches!(changelog, ParseChangelogErrorInternal::InvalidChangeGroup(group, _) if group == "Invalid");
     }
 
     #[test]
@@ -606,7 +545,7 @@ mod test {
         let release_heading = "[00.01.02] - 2023-01-01";
         let changelog: Result<Changelog, _> =
             parse_changelog(&format!("{CHANGELOG_HEADER}\n\n## {release_heading}"));
-        assert_err_matches!(changelog, ParseChangelogErrorInternal::Version(heading, version, _) if heading == release_heading && version == "00.01.02");
+        assert_err_matches!(changelog, ParseChangelogErrorInternal::InvalidVersion(heading, version, _) if heading == release_heading && version == "00.01.02");
     }
 
     #[test]
@@ -614,7 +553,7 @@ mod test {
         let release_heading = "[0.1.2] - 9999-99-99";
         let changelog: Result<Changelog, _> =
             parse_changelog(&format!("{CHANGELOG_HEADER}\n\n## {release_heading}"));
-        assert_err_matches!(changelog, ParseChangelogErrorInternal::InvalidReleaseDate(heading, year, month, day) if heading == release_heading && year == 9999 && month == 99 && day == 99);
+        assert_err_matches!(changelog, ParseChangelogErrorInternal::InvalidReleaseDate(heading, release_date, _) if heading == release_heading && release_date == "9999-99-99");
     }
 
     #[test]
@@ -638,6 +577,6 @@ mod test {
         let release_heading = "[0.1.2] - 2023-01-01 [UNKNOWN TAG]";
         let changelog: Result<Changelog, _> =
             parse_changelog(&format!("{CHANGELOG_HEADER}\n\n## {release_heading}"));
-        assert_err_matches!(changelog, ParseChangelogErrorInternal::InvalidReleaseTag(heading, tag) if heading == release_heading && tag == "UNKNOWN TAG");
+        assert_err_matches!(changelog, ParseChangelogErrorInternal::InvalidReleaseTag(heading, tag, _) if heading == release_heading && tag == "UNKNOWN TAG");
     }
 }
