@@ -210,7 +210,7 @@ pub struct ParseChangelogError(#[from] ParseChangelogErrorInternal);
 #[derive(Debug, Error)]
 enum ParseChangelogErrorInternal {
     #[error("Could not parse changelog as markdown\nError: {0}")]
-    Markdown(String),
+    Markdown(markdown::message::Message),
 
     #[error("Could not parse change group type from changelog - {0}\nError: {1}")]
     InvalidChangeGroup(String, #[source] ParseChangeGroupError),
