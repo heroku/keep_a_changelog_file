@@ -5,4 +5,4 @@ inputs:
     description: "Changelogs to validate"
 runs:
   using: 'node20'
-  main: 'index.cjs'
+  main: 'dist/index.cjs'

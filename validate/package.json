@@ -5,6 +5,7 @@
   "description": "",
   "main": "index.cjs",
   "scripts": {
+    "build": "ncc build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -12,5 +13,8 @@
   "dependencies": {
     "@actions/core": "^1.10.1",
     "@actions/glob": "^0.4.0"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.38.1"
   }
 }
