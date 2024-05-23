@@ -1,0 +1,8 @@
+name: 'Hello World'
+description: 'Greet someone and record the time'
+inputs:
+  changelogs:
+    description: "Changelogs to validate"
+runs:
+  using: 'node20'
+  main: 'index.js'
