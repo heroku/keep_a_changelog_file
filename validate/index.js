@@ -15,7 +15,7 @@ async function main() {
         files[changelog] = await readFile(changelog, 'utf-8')
     }
 
-    const results = changelog_js(JSON.stringify({files}))
+    const results = JSON.parse(changelog_js(JSON.stringify({files})))
 
     console.log(`Results: ${Object.entries(results).map(([file, valid]) => `${file}: ${valid}`).join('\n')}`)
 }
