@@ -20,7 +20,7 @@ cargo add --git https://github.com/heroku/keep_a_changelog
 ```rust
 use keep_a_changelog::{Changelog, ChangeGroup, PromoteOptions};
 
-fn main() {
+# fn main() {
     // parse a changelog
     let mut changelog: Changelog = "\
 # Changelog
@@ -51,5 +51,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
     // output the changelog
     println!("{}", changelog);
-}
+# }
 ```
