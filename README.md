@@ -14,10 +14,11 @@ cargo add keep_a_changelog_file
 ## Usage
 
 ```rust
-use keep_a_changelog_file::{Changelog, ChangeGroup, PromoteOptions};
+use keep_a_changelog_file::{Changelog, ChangeGroup, PromoteOptions, ReleaseLink, ReleaseVersion};
 
-// parse a changelog
-let mut changelog: Changelog = "\
+fn example_usage() {
+    // parse a changelog
+    let mut changelog: Changelog = "\
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -26,25 +27,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]"
-.parse() ?;
+        .parse()
+        .unwrap();
 
-// modify the unreleased section
-changelog.unreleased.add(
-ChangeGroup::Fixed,
-"Fixed bug in feature X"
-);
-changelog.unreleased.add(
-ChangeGroup::Deprecated,
-"Feature Y will be removed from the next major release"
-);
+    // modify the unreleased section
+    changelog
+        .unreleased
+        .add(ChangeGroup::Fixed, "Fixed bug in feature X");
+    changelog.unreleased.add(
+        ChangeGroup::Deprecated,
+        "Feature Y will be removed from the next major release",
+    );
 
-// promote the unreleased changes to a new release
-let promote_options = PromoteOptions::new("0.0.1".parse() ? )
-.with_link("https://github.com/my-org/my-project/releases/v0.0.1".parse() ? );
-changelog.promote_unreleased( & promote_options) ?;
+    // promote the unreleased changes to a new release
+    let release_version = "0.0.1".parse::<ReleaseVersion>().unwrap();
+    let release_link = "https://github.com/my-org/my-project/releases/v0.0.1"
+        .parse::<ReleaseLink>()
+        .unwrap();
+    changelog
+        .promote_unreleased(&PromoteOptions::new(release_version).with_link(release_link))
+        .unwrap();
 
-// output the changelog
-println!("{}", changelog);
+    // output the changelog
+    println!("{changelog}");
+}
 ```
 
 [Build Status]: https://img.shields.io/github/actions/workflow/status/heroku/keep_a_changelog/ci.yml?branch=main
