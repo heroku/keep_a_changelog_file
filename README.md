@@ -12,7 +12,7 @@ A serializer and deserializer for changelogs written in [Keep a Changelog](https
 ## Install
 
 ```sh
-cargo add keep_a_changelog
+cargo add --git https://github.com/heroku/keep_a_changelog
 ```
 
 ## Usage
