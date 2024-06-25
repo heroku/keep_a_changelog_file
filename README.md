@@ -2,8 +2,8 @@
 
 [![Build Status]][ci] [![MSRV]][install-rust]
 
-[Build Status]: https://img.shields.io/github/actions/workflow/status/colincasey/keep_a_changelog/ci.yml?branch=main
-[ci]: https://github.com/colincasey/keep_a_changelog/actions/workflows/ci.yml?query=branch%3Amain
+[Build Status]: https://img.shields.io/github/actions/workflow/status/heroku/keep_a_changelog/ci.yml?branch=main
+[ci]: https://github.com/heroku/keep_a_changelog/actions/workflows/ci.yml?query=branch%3Amain
 [MSRV]: https://img.shields.io/badge/MSRV-rustc_1.74+-lightgray.svg
 [install-rust]: https://www.rust-lang.org/tools/install
 
