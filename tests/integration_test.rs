@@ -1,7 +1,7 @@
 #![allow(clippy::unwrap_used)]
 #![allow(unused_crate_dependencies)]
 
-use keep_a_changelog::{ChangeGroup, Changelog, PromoteOptions};
+use keep_a_changelog_file::{ChangeGroup, Changelog, PromoteOptions};
 
 #[test]
 fn adding_unreleased_changes() {
