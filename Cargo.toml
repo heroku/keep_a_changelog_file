@@ -18,7 +18,7 @@ exclude = [
 chrono = "0.4"
 indexmap = "2"
 lazy_static = "1"
-markdown = "=1.0.0-alpha.17"
+markdown = "=1.0.0-alpha.18"
 regex = "1"
 semver = "1"
 thiserror = "1"
