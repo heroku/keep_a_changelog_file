@@ -27,6 +27,37 @@ pub use crate::release_version::ParseVersionError;
 pub use crate::release_version::ReleaseVersion;
 pub use crate::releases::Releases;
 pub use crate::unreleased::Unreleased;
+use std::collections::HashMap;
+use std::str::FromStr;
+
+use wasm_bindgen::prelude::*;
+#[wasm_bindgen]
+pub fn changelog_js(config: String) -> String {
+    let value: serde_json::Value = serde_json::from_str(&config).expect("deserialize json");
+    let files = value
+        .as_object()
+        .expect("read as object")
+        .get("files")
+        .expect("get 'files'")
+        .as_object()
+        .expect("read files as object")
+        .iter()
+        .map(|(k, v)| {
+            (
+                k.to_string(),
+                v.as_str().expect("read v as string").to_string(),
+            )
+        })
+        .collect::<Vec<_>>();
+    let mut results: HashMap<String, bool> = HashMap::new();
+    for (file, contents) in files {
+        match Changelog::from_str(&contents) {
+            Ok(_) => results.insert(file, true),
+            Err(_) => results.insert(file, false),
+        };
+    }
+    serde_json::to_string(&results).expect("serialize to json")
+}
 
 #[cfg(test)]
 mod test {
