@@ -1,5 +1,6 @@
 #![allow(clippy::unwrap_used)]
 #![allow(unused_crate_dependencies)]
+#![allow(missing_docs)]
 
 use keep_a_changelog_file::{ChangeGroup, Changelog, PromoteOptions};
 
