@@ -21,7 +21,7 @@ lazy_static = "1"
 markdown = "=1.0.0-alpha.21"
 regex = "1"
 semver = "1"
-thiserror = "1"
+thiserror = "2"
 uriparse = "0.6"
 
 [lints.rust]
