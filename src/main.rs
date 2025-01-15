@@ -6,10 +6,10 @@ use std::path::Path;
 fn main() {
     println!("Hello, world!");
     println!("{:?}", std::env::args());
-    let mut args = std::env::args().collect::<Vec<String>>();
-    match args.pop().as_deref() {
+    let args = std::env::args().collect::<Vec<String>>();
+    match args.first().map(String::as_str) {
         Some("validate") => {
-            validate(&args);
+            validate(&args[1..]);
         }
         Some(invalid_command) => {
             panic!("Not a valid command: {invalid_command}");
