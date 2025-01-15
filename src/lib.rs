@@ -3,6 +3,7 @@
 mod change_group;
 mod changelog;
 mod changes;
+mod parser;
 mod release;
 mod release_date;
 mod release_link;

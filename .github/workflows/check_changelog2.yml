@@ -1,0 +1,18 @@
+name: Check Changelog (improved)
+
+on:
+  pull_request:
+    types: [opened, reopened, labeled, unlabeled, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  check-changelog:
+    runs-on: ubuntu-latest
+    if: (!contains(github.event.pull_request.labels.*.name, 'skip changelog'))
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check that CHANGELOG is touched and valid
+        run: ./
