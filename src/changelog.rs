@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 /// The changelog is a curated, chronologically ordered list of notable changes for each version of a project.
 #[derive(Debug, Eq, PartialEq, Default, Clone)]
 pub struct Changelog {
+    pub title: String,
+    pub description: (String, String),
     /// The Unreleased section is always present in the changelog to communicate upcoming changes.
     pub unreleased: Unreleased,
     /// The list of releases
@@ -408,6 +410,8 @@ fn parse_changelog(input: &str) -> Result<Changelog, ParseChangelogErrorInternal
     }
 
     Ok(Changelog {
+        title: String::new(),
+        description: (String::new(), String::new()),
         unreleased: unreleased.unwrap_or_default(),
         releases: Releases::from_iter(releases),
     })

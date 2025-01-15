@@ -1,0 +1,14 @@
+name: Validate Keep a Changelog Format
+description: Validates the given file matches the Keep a Changelog spec and reports any issues if not.
+
+# Define your inputs here.
+inputs:
+  changelog:
+    description: Path to the changelog file
+    required: true
+    default: CHANGELOG.md
+
+runs:
+  using: docker
+  image: Dockerfile
+  args: ["validate", "${{ inputs.changelog }}"]

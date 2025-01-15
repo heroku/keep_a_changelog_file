@@ -40,13 +40,13 @@ impl FromStr for ChangeGroup {
     type Err = ParseChangeGroupError;
 
     fn from_str(value: &str) -> Result<Self, Self::Err> {
-        match value.trim().to_lowercase().as_str() {
-            "added" => Ok(ChangeGroup::Added),
-            "changed" => Ok(ChangeGroup::Changed),
-            "deprecated" => Ok(ChangeGroup::Deprecated),
-            "removed" => Ok(ChangeGroup::Removed),
-            "fixed" => Ok(ChangeGroup::Fixed),
-            "security" => Ok(ChangeGroup::Security),
+        match value {
+            "Added" => Ok(ChangeGroup::Added),
+            "Changed" => Ok(ChangeGroup::Changed),
+            "Deprecated" => Ok(ChangeGroup::Deprecated),
+            "Removed" => Ok(ChangeGroup::Removed),
+            "Fixed" => Ok(ChangeGroup::Fixed),
+            "Security" => Ok(ChangeGroup::Security),
             _ => Err(ParseChangeGroupError(value.to_string())),
         }
     }

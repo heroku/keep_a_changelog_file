@@ -18,7 +18,8 @@ exclude = [
 chrono = "0.4"
 indexmap = "2"
 lazy_static = "1"
-markdown = "=1.0.0-alpha.21"
+markdown = { git = "https://github.com/wooorm/markdown-rs.git", branch = "main" }
+mdast_util_to_markdown = { git = "https://github.com/wooorm/markdown-rs.git", branch = "main" }
 regex = "1"
 semver = "1"
 thiserror = "2"
@@ -39,3 +40,6 @@ enum_variant_names = "allow"
 missing_errors_doc = "allow"
 missing_panics_doc = "allow"
 module_name_repetitions = "allow"
+
+[profile.release]
+strip = true
