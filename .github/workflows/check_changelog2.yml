@@ -15,4 +15,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Check that CHANGELOG is touched and valid
-        run: ./
+        uses: ./
