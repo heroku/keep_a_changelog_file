@@ -1,15 +1,16 @@
 #![allow(missing_docs)]
 #![allow(unused_crate_dependencies)]
 use std::fs;
+use std::ops::Deref;
 use std::path::Path;
 
 fn main() {
     println!("Hello, world!");
     println!("{:?}", std::env::args());
     let args = std::env::args().collect::<Vec<String>>();
-    match args.first().map(String::as_str) {
+    match args.get(1).map(String::as_str) {
         Some("validate") => {
-            validate(&args[1..]);
+            validate(&args[2..]);
         }
         Some(invalid_command) => {
             panic!("Not a valid command: {invalid_command}");
