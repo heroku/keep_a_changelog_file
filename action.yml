@@ -3,8 +3,8 @@ description: Validates the given file matches the Keep a Changelog spec and repo
 
 # Define your inputs here.
 inputs:
-  changelog:
-    description: Path to the changelog file
+  changelog_files:
+    description: The changelog file(s) to check
     required: true
     default: "**/CHANGELOG.md"
 
