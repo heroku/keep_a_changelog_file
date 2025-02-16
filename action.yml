@@ -6,7 +6,7 @@ inputs:
   changelog:
     description: Path to the changelog file
     required: true
-    default: CHANGELOG.md
+    default: "**/CHANGELOG.md"
 
 runs:
   using: docker
