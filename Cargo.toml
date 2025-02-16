@@ -7,7 +7,7 @@ license = "Apache-2.0"
 keywords = ["keep-a-changelog", "changelog", "serialize", "deserialize"]
 categories = ["parser-implementations", "parsing"]
 edition = "2021"
-rust-version = "1.74"
+rust-version = "1.80"
 exclude = [
     ".idea",
     ".github",
@@ -17,13 +17,15 @@ exclude = [
 [dependencies]
 chrono = "0.4"
 indexmap = "2"
-lazy_static = "1"
 markdown = { git = "https://github.com/wooorm/markdown-rs.git", branch = "main" }
 mdast_util_to_markdown = { git = "https://github.com/wooorm/markdown-rs.git", branch = "main" }
-regex = "1"
+regex-lite = "0.1"
 semver = "1"
 thiserror = "2"
 uriparse = "0.6"
+
+[dev-dependencies]
+indoc = "2.0.5"
 
 [lints.rust]
 unused_crate_dependencies = "warn"
@@ -43,3 +45,6 @@ module_name_repetitions = "allow"
 
 [profile.release]
 strip = true
+
+[workspace]
+members = ["action", "demo"]

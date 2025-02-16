@@ -1,0 +1,8 @@
+[package]
+name = "action"
+edition = "2021"
+publish = false
+
+[dependencies]
+keep_a_changelog_file = { path = ".." }
+clap = "4"
