@@ -54,7 +54,7 @@ fn validate_changelog(changelog_file: &Path) -> Result<(), ActionError> {
         }
     }
 
-    todo!()
+    Ok(())
 }
 
 enum ActionError {
