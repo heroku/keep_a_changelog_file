@@ -71,11 +71,11 @@ fn print_summary_report(results: &[(PathBuf, Vec<Diagnostic>)]) -> Result<(), Ac
         } else {
             format_to!(report, ":x: Invalid\n\n");
             format_to!(report, "| Error | Line:Column |\n");
-            format_to!(report, "|-------|-------------|\n");
+            format_to!(report, "|-------|------------:|\n");
             for diagnostic in diagnostics {
                 format_to!(
                     report,
-                    "| {message} | {line}:{column} |\n",
+                    "| <pre><code>{message}</code></pre> | {line}:{column} |\n",
                     message = diagnostic.message,
                     line = diagnostic.position.start.line,
                     column = diagnostic.position.start.column
