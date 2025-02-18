@@ -56,6 +56,7 @@ pub(crate) fn get_multiline_input(
         .collect())
 }
 
+#[derive(Debug)]
 pub(crate) enum InputError {
     MissingRequiredValue(String),
 }
