@@ -65,11 +65,13 @@ fn print_summary_report(results: &[(PathBuf, Vec<Diagnostic>)]) -> Result<(), Ac
     let mut report = String::new();
     format_to!(report, "# Changelog Validation Report\n\n");
     for (changelog, diagnostics) in results {
-        format_to!(report, "### `{}`\n\n", changelog.display());
-        if diagnostics.is_empty() {
-            format_to!(report, ":white_check_mark: Valid\n\n");
+        let emoticon = if diagnostics.is_empty() {
+            ":white_check_mark:"
         } else {
-            format_to!(report, ":x: Invalid\n\n");
+            ":x:"
+        };
+        format_to!(report, "### {emoticon} `{}`\n\n", changelog.display());
+        if !diagnostics.is_empty() {
             format_to!(report, "| Line | Column | Error |\n");
             format_to!(report, "|-----:|-------:|-------|\n");
             for diagnostic in diagnostics {
