@@ -65,25 +65,22 @@ fn print_summary_report(results: &[(PathBuf, Vec<Diagnostic>)]) -> Result<(), Ac
     let mut report = String::new();
     format_to!(report, "# Changelog Validation Report\n\n");
     for (changelog, diagnostics) in results {
-        format_to!(report, "## {}\n\n", changelog.display());
+        format_to!(report, "### `{}`\n\n", changelog.display());
         if diagnostics.is_empty() {
             format_to!(report, ":white_check_mark: Valid\n\n");
         } else {
             format_to!(report, ":x: Invalid\n\n");
-            format_to!(report, "<div><ul style=\"list-style: none; margin: 0; padding: 0; background-color: #f9ecee\">");
+            format_to!(report, "| Error | Line:Column |\n");
+            format_to!(report, "|-------|-------------|\n");
             for diagnostic in diagnostics {
-                format_to!(report, "<li style=\"display: flex; margin-bottom 1em; \">");
                 format_to!(
                     report,
-                    "<span style=\"flex: 0 0 30px; padding: 0.5em; background-color: #efc4cb; font-weight: bold;\">[${line}:${column}]</span>",
+                    "| {message} | {line}:{column} |\n",
+                    message = diagnostic.message,
                     line = diagnostic.position.start.line,
                     column = diagnostic.position.start.column
                 );
-                format_to!(report, "<span style=\"flex: 1 1 auto; padding: 0.5em;\"><pre><code>{message}</code></pre></span>", 
-                    message = diagnostic.message);
-                format_to!(report, "</li>");
             }
-            format_to!(report, "</ul></div>");
         }
     }
 
