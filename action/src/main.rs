@@ -70,12 +70,12 @@ fn print_summary_report(results: &[(PathBuf, Vec<Diagnostic>)]) -> Result<(), Ac
             format_to!(report, ":white_check_mark: Valid\n\n");
         } else {
             format_to!(report, ":x: Invalid\n\n");
-            format_to!(report, "| Error | Line:Column |\n");
-            format_to!(report, "|-------|------------:|\n");
+            format_to!(report, "| Line | Column | Error |\n");
+            format_to!(report, "|-----:|-------:|-------|\n");
             for diagnostic in diagnostics {
                 format_to!(
                     report,
-                    "| <pre><code>{message}</code></pre> | {line}:{column} |\n",
+                    "| {line} | {column} | <pre>{message}</pre> |\n",
                     message = diagnostic.message,
                     line = diagnostic.position.start.line,
                     column = diagnostic.position.start.column
