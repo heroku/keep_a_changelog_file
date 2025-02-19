@@ -3,9 +3,6 @@ use glob::{glob, PatternError};
 use keep_a_changelog_file::{Changelog, Diagnostic};
 use std::fmt::{Display, Formatter};
 use std::fs;
-use std::fs::File;
-use std::io::BufWriter;
-use std::io::Write;
 use std::path::PathBuf;
 use std::str::FromStr;
 
@@ -145,12 +142,12 @@ impl ValidationReport {
 
 const SKIP_EMOTICON: &str = ":white_circle:";
 const SKIP_TEXT: &str = "(skip)";
-const PASS_EMOTICON: &str = ":large_blue_circle";
+const PASS_EMOTICON: &str = ":large_blue_circle:";
 const PASS_TEXT: &str = "(pass)";
 const FAIL_EMOTICON: &str = ":red_circle:";
 const FAIL_TEXT: &str = "(fail)";
-const UNRELEASED_VALIDATION: &str = "Check: Does the Changelog contains unreleased changes";
-const CONTENTS_VALIDATION: &str = "Check: Is the Changelog format valid";
+const UNRELEASED_VALIDATION: &str = "Does the Changelog contains unreleased changes";
+const CONTENTS_VALIDATION: &str = "Is the Changelog format valid";
 
 impl Display for ValidationReport {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
@@ -177,12 +174,12 @@ impl Display for ValidationReport {
 
         if let ContentsValidation::Fail(diagnostics) = &self.contents_validation {
             writeln!(f)?;
-            writeln!(f, "| Line | Column | Error |\n")?;
-            writeln!(f, "|-----:|-------:|-------|\n")?;
+            writeln!(f, "| Line | Column | Error |")?;
+            writeln!(f, "|-----:|-------:|-------|")?;
             for diagnostic in diagnostics {
                 writeln!(
                     f,
-                    "| {line} | {column} | <pre>{message}</pre> |\n",
+                    "| {line} | {column} | <pre>{message}</pre> |",
                     message = diagnostic.message,
                     line = diagnostic.position.start.line,
                     column = diagnostic.position.start.column
