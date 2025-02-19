@@ -58,8 +58,6 @@ fn main() {
 }
 
 fn execute_action() -> Result<(), ActionError> {
-    println!("{:?}", std::env::vars());
-    
     let changelog_files_input = get_multiline_input("changelog_files")
         .trim_whitespace(true)
         .call()
@@ -86,7 +84,7 @@ fn execute_action() -> Result<(), ActionError> {
             .filter(|path| path.is_file())
         {
             gha::debug(format!("Processing {}", changelog_file.display()));
-            
+
             let mut validation_report = ValidationReport::new(changelog_file);
 
             let contents = fs::read_to_string(&validation_report.changelog_file).map_err(|e| {

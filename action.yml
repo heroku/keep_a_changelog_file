@@ -11,7 +11,7 @@ inputs:
     description: TODO
     required: false
     default: "true"
-  validate_changed:
+  validate_touched:
     description: TODO
     required: false
     default: "true"
