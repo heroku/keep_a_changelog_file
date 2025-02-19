@@ -108,7 +108,7 @@ fn execute_action() -> Result<(), ActionError> {
             .iter()
             .map(|validation_report| validation_report.to_string())
             .collect::<Vec<_>>()
-            .join("\n\n"),
+            .join("\n\n---\n\n"),
     )
     .map_err(ActionError::WriteStepSummary)?;
 
@@ -116,12 +116,12 @@ fn execute_action() -> Result<(), ActionError> {
         && validation_reports
             .iter()
             .any(|report| matches!(report.unreleased_validation, UnreleasedValidation::Fail));
-    
+
     let fail_on_contents_validation = validate_contents_input
         && validation_reports
-        .iter()
-        .any(|report| matches!(report.contents_validation, ContentsValidation::Fail(_)));
-    
+            .iter()
+            .any(|report| matches!(report.contents_validation, ContentsValidation::Fail(_)));
+
     if fail_on_contents_validation || fail_on_unreleased_input {
         std::process::exit(1);
     }
@@ -188,12 +188,12 @@ impl Display for ValidationReport {
 
         if let ContentsValidation::Fail(diagnostics) = &self.contents_validation {
             writeln!(f)?;
-            writeln!(f, "| Line | Column | Error |")?;
-            writeln!(f, "|-----:|-------:|-------|")?;
+            writeln!(f, "    | Line | Column | Error |")?;
+            writeln!(f, "    |-----:|-------:|-------|")?;
             for diagnostic in diagnostics {
                 writeln!(
                     f,
-                    "| {line} | {column} | <pre>{message}</pre> |",
+                    "    | {line} | {column} | <pre>{message}</pre> |",
                     message = diagnostic.message,
                     line = diagnostic.position.start.line,
                     column = diagnostic.position.start.column
