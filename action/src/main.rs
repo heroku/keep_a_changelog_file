@@ -105,13 +105,15 @@ fn execute_action() -> Result<(), ActionError> {
         }
     }
 
-    let mut summary_writer = github_step_summary()
-        .and_then(|path| File::open(path).map_err(ActionError::WriteStepSummary))
-        .map(BufWriter::new)?;
-
-    for validation_report in validation_reports {
-        write!(summary_writer, "{validation_report}\n\n").map_err(ActionError::WriteStepSummary)?;
-    }
+    fs::write(
+        github_step_summary()?,
+        validation_reports
+            .iter()
+            .map(|validation_report| validation_report.to_string())
+            .collect::<Vec<_>>()
+            .join("\n\n"),
+    )
+    .map_err(ActionError::WriteStepSummary)?;
 
     Ok(())
 }
