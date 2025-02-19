@@ -5,19 +5,19 @@ description: Validates the given file matches the Keep a Changelog spec and repo
 inputs:
   changelog_files:
     description: The changelog file(s) to check
-    required: true
+    required: false
     default: "**/CHANGELOG.md"
   validate_contents:
     description: TODO
-    required: true
+    required: false
     default: "true"
   validate_changed:
     description: TODO
-    required: true
+    required: false
     default: "true"
   validate_unreleased:
     description: TODO
-    required: true
+    required: false
     default: "true"
 
 runs:

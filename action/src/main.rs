@@ -59,20 +59,15 @@ fn main() {
 
 fn execute_action() -> Result<(), ActionError> {
     let changelog_files_input = get_multiline_input("changelog_files")
-        .required(true)
         .trim_whitespace(true)
         .call()
         .map_err(ActionError::Input)?;
 
     let validate_contents_input = get_boolean_input("validate_contents")
-        .required(true)
-        .trim_whitespace(true)
         .call()
         .map_err(ActionError::Input)?;
 
     let validate_touched_input = get_boolean_input("validate_touched")
-        .required(true)
-        .trim_whitespace(true)
         .call()
         .map_err(ActionError::Input)?;
 
