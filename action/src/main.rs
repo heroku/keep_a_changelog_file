@@ -50,7 +50,7 @@ fn main() {
                 .call();
             }
             ActionError::Command(error) => {
-                gha::error("Error executing command:\n{error}").call();
+                gha::error(format!("Error executing command:\n{error}")).call();
             }
         }
         std::process::exit(1);
