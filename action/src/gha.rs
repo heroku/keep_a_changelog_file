@@ -1,6 +1,6 @@
+use crate::ActionError;
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
-use std::io::stdout;
 use std::ops::Deref;
 use std::path::PathBuf;
 
@@ -56,9 +56,49 @@ pub(crate) fn get_multiline_input(
         .collect())
 }
 
+const TRUE_VALUES: [&str; 3] = ["true", "True", "TRUE"];
+const FALSE_VALUES: [&str; 3] = ["false", "False", "FALSE"];
+
+#[bon::builder]
+pub(crate) fn get_boolean_input(
+    #[builder(start_fn)] //
+    name: &str,
+    #[builder(default = false)] //
+    required: bool,
+    #[builder(default = false)] trim_whitespace: bool,
+) -> Result<bool, InputError> {
+    let value = get_input(name)
+        .required(required)
+        .trim_whitespace(trim_whitespace)
+        .call()?;
+
+    if TRUE_VALUES.contains(&value.as_str()) {
+        return Ok(true);
+    }
+
+    if FALSE_VALUES.contains(&value.as_str()) {
+        return Ok(false);
+    }
+
+    Err(InputError::InvalidBooleanType(name.to_string()))
+}
+
 #[derive(Debug)]
 pub(crate) enum InputError {
     MissingRequiredValue(String),
+    InvalidBooleanType(String),
+}
+
+pub(crate) fn github_step_summary() -> Result<PathBuf, ActionError> {
+    std::env::var("GITHUB_STEP_SUMMARY")
+        .map(PathBuf::from)
+        .map_err(|_| ActionError::Environment("GITHUB_STEP_SUMMARY".to_string()))
+}
+
+pub(crate) fn github_base_ref() -> Result<String, ActionError> {
+    std::env::var("GITHUB_BASE_REF")
+        .map(String::from)
+        .map_err(|_| ActionError::Environment("GITHUB_BASE_REF".to_string()))
 }
 
 #[bon::builder]

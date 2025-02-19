@@ -7,6 +7,18 @@ inputs:
     description: The changelog file(s) to check
     required: true
     default: "**/CHANGELOG.md"
+  validate_contents:
+    description: TODO
+    required: true
+    default: "true"
+  validate_changed:
+    description: TODO
+    required: true
+    default: "true"
+  validate_unreleased:
+    description: TODO
+    required: true
+    default: "true"
 
 runs:
   using: docker
