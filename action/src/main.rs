@@ -112,6 +112,20 @@ fn execute_action() -> Result<(), ActionError> {
     )
     .map_err(ActionError::WriteStepSummary)?;
 
+    let fail_on_unreleased_input = validate_unreleased_input
+        && validation_reports
+            .iter()
+            .any(|report| matches!(report.unreleased_validation, UnreleasedValidation::Fail));
+    
+    let fail_on_contents_validation = validate_contents_input
+        && validation_reports
+        .iter()
+        .any(|report| matches!(report.contents_validation, ContentsValidation::Fail(_)));
+    
+    if fail_on_contents_validation || fail_on_unreleased_input {
+        std::process::exit(1);
+    }
+
     Ok(())
 }
 
@@ -141,22 +155,22 @@ impl ValidationReport {
 }
 
 const SKIP_EMOTICON: &str = ":white_circle:";
-const SKIP_TEXT: &str = "(skip)";
+const SKIP_TEXT: &str = "Skip";
 const PASS_EMOTICON: &str = ":large_blue_circle:";
-const PASS_TEXT: &str = "(pass)";
+const PASS_TEXT: &str = "Pass";
 const FAIL_EMOTICON: &str = ":red_circle:";
-const FAIL_TEXT: &str = "(fail)";
-const UNRELEASED_VALIDATION: &str = "Does the Changelog contains unreleased changes";
-const CONTENTS_VALIDATION: &str = "Is the Changelog format valid";
+const FAIL_TEXT: &str = "Fail";
+const UNRELEASED_VALIDATION: &str = "**Does the Changelog contains unreleased changes?**";
+const CONTENTS_VALIDATION: &str = "**Is the Changelog format valid?**";
 
 impl Display for ValidationReport {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         let pass =
-            |f: &mut Formatter, message| writeln!(f, "- {PASS_EMOTICON} {message} {PASS_TEXT}\n");
+            |f: &mut Formatter, message| writeln!(f, "- {message} - {PASS_EMOTICON} {PASS_TEXT}");
         let fail =
-            |f: &mut Formatter, message| writeln!(f, "- {FAIL_EMOTICON} {message} {FAIL_TEXT}\n");
+            |f: &mut Formatter, message| writeln!(f, "- {message} - {FAIL_EMOTICON} {FAIL_TEXT}");
         let skip =
-            |f: &mut Formatter, message| writeln!(f, "- {SKIP_EMOTICON} {message} {SKIP_TEXT}\n");
+            |f: &mut Formatter, message| writeln!(f, "- {message} - {SKIP_EMOTICON} {SKIP_TEXT}");
 
         write!(f, "### `{}`\n\n", self.changelog_file.display())?;
 
