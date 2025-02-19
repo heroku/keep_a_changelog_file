@@ -11,10 +11,6 @@ inputs:
     description: TODO
     required: false
     default: "true"
-  validate_touched:
-    description: TODO
-    required: false
-    default: "true"
   validate_unreleased:
     description: TODO
     required: false

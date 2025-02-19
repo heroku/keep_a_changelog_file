@@ -1,5 +1,4 @@
 use crate::gha::{get_boolean_input, get_multiline_input, github_step_summary, InputError};
-use fun_run::CommandWithName;
 use glob::{glob, PatternError};
 use keep_a_changelog_file::{Changelog, Diagnostic};
 use std::fmt::{Display, Formatter};
@@ -8,7 +7,6 @@ use std::fs::File;
 use std::io::BufWriter;
 use std::io::Write;
 use std::path::PathBuf;
-use std::process::Command;
 use std::str::FromStr;
 
 mod gha;
@@ -49,9 +47,6 @@ fn main() {
                 ))
                 .call();
             }
-            ActionError::Command(error) => {
-                gha::error(format!("Error executing command:\n{error}")).call();
-            }
         }
         std::process::exit(1);
     }
@@ -64,10 +59,6 @@ fn execute_action() -> Result<(), ActionError> {
         .map_err(ActionError::Input)?;
 
     let validate_contents_input = get_boolean_input("validate_contents")
-        .call()
-        .map_err(ActionError::Input)?;
-
-    let validate_touched_input = get_boolean_input("validate_touched")
         .call()
         .map_err(ActionError::Input)?;
 
@@ -110,30 +101,6 @@ fn execute_action() -> Result<(), ActionError> {
                 }
             };
 
-            if validate_touched_input {
-                let base_ref = gha::github_base_ref()?;
-
-                Command::new("git")
-                    .args(["fetch", "origin", &base_ref, "--depth", "1"])
-                    .named_output()
-                    .map_err(ActionError::Command)?;
-
-                let diff = Command::new("git")
-                    .args(["diff", &format!("remotes/origin/{base_ref}"), "--name-only"])
-                    .named_output()
-                    .map_err(ActionError::Command)?;
-
-                let file_found_in_diff = diff.stdout_lossy().lines().any(|line| {
-                    line.contains(validation_report.changelog_file.to_string_lossy().as_ref())
-                });
-
-                if file_found_in_diff {
-                    validation_report.touched_validation = TouchedValidation::Pass;
-                } else {
-                    validation_report.touched_validation = TouchedValidation::Fail;
-                }
-            }
-
             validation_reports.push(validation_report);
         }
     }
@@ -156,13 +123,11 @@ enum ActionError {
     ReadChangelog(PathBuf, std::io::Error),
     Environment(String),
     WriteStepSummary(std::io::Error),
-    Command(fun_run::CmdError),
 }
 
 struct ValidationReport {
     changelog_file: PathBuf,
     contents_validation: ContentsValidation,
-    touched_validation: TouchedValidation,
     unreleased_validation: UnreleasedValidation,
 }
 
@@ -171,7 +136,6 @@ impl ValidationReport {
         Self {
             changelog_file,
             contents_validation: ContentsValidation::Skipped,
-            touched_validation: TouchedValidation::Skipped,
             unreleased_validation: UnreleasedValidation::Skipped,
         }
     }
@@ -183,7 +147,6 @@ const PASS_EMOTICON: &str = ":large_blue_circle";
 const PASS_TEXT: &str = "(pass)";
 const FAIL_EMOTICON: &str = ":red_circle:";
 const FAIL_TEXT: &str = "(fail)";
-const TOUCHED_VALIDATION: &str = "Check: Has the Changelog been touched";
 const UNRELEASED_VALIDATION: &str = "Check: Does the Changelog contains unreleased changes";
 const CONTENTS_VALIDATION: &str = "Check: Is the Changelog format valid";
 
@@ -197,12 +160,6 @@ impl Display for ValidationReport {
             |f: &mut Formatter, message| writeln!(f, "- {SKIP_EMOTICON} {message} {SKIP_TEXT}\n");
 
         write!(f, "### `{}`\n\n", self.changelog_file.display())?;
-
-        match self.touched_validation {
-            TouchedValidation::Skipped => skip(f, TOUCHED_VALIDATION),
-            TouchedValidation::Pass => pass(f, TOUCHED_VALIDATION),
-            TouchedValidation::Fail => fail(f, TOUCHED_VALIDATION),
-        }?;
 
         match self.unreleased_validation {
             UnreleasedValidation::Skipped => skip(f, UNRELEASED_VALIDATION),
@@ -239,12 +196,6 @@ enum ContentsValidation {
     Skipped,
     Pass,
     Fail(Vec<Diagnostic>),
-}
-
-enum TouchedValidation {
-    Skipped,
-    Pass,
-    Fail,
 }
 
 enum UnreleasedValidation {
