@@ -58,6 +58,8 @@ fn main() {
 }
 
 fn execute_action() -> Result<(), ActionError> {
+    println!("{:?}", std::env::vars());
+    
     let changelog_files_input = get_multiline_input("changelog_files")
         .trim_whitespace(true)
         .call()
@@ -72,8 +74,6 @@ fn execute_action() -> Result<(), ActionError> {
         .map_err(ActionError::Input)?;
 
     let validate_unreleased_input = get_boolean_input("validate_unreleased")
-        .required(true)
-        .trim_whitespace(true)
         .call()
         .map_err(ActionError::Input)?;
 
@@ -85,6 +85,8 @@ fn execute_action() -> Result<(), ActionError> {
             .filter_map(Result::ok)
             .filter(|path| path.is_file())
         {
+            gha::debug(format!("Processing {}", changelog_file.display()));
+            
             let mut validation_report = ValidationReport::new(changelog_file);
 
             let contents = fs::read_to_string(&validation_report.changelog_file).map_err(|e| {

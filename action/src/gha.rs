@@ -101,6 +101,16 @@ pub(crate) fn github_base_ref() -> Result<String, ActionError> {
         .map_err(|_| ActionError::Environment("GITHUB_BASE_REF".to_string()))
 }
 
+pub(crate) fn debug(message: impl Into<String>) {
+    issue_command(Command {
+        command: CommandType::Debug,
+        message: message.into(),
+        properties: CommandProperties {
+            inner: HashMap::new(),
+        },
+    })
+}
+
 #[bon::builder]
 pub(crate) fn error(
     #[builder(start_fn, into)] //
@@ -114,7 +124,7 @@ pub(crate) fn error(
     end_column: Option<usize>,
 ) {
     issue_command(Command {
-        command: "error".to_string(),
+        command: CommandType::Error,
         properties: AnnotationProperties::builder()
             .maybe_title(title)
             .maybe_file(file)
@@ -133,7 +143,7 @@ fn issue_command(command: Command) {
 }
 
 struct Command {
-    command: String,
+    command: CommandType,
     message: String,
     properties: CommandProperties,
 }
@@ -152,6 +162,20 @@ impl Display for Command {
         }
         write!(f, "{}", property_strings.join(","))?;
         write!(f, "{CMD_STRING}{}", escape_data(&self.message))
+    }
+}
+
+enum CommandType {
+    Error,
+    Debug,
+}
+
+impl Display for CommandType {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            CommandType::Error => write!(f, "error"),
+            CommandType::Debug => write!(f, "debug"),
+        }
     }
 }
 
