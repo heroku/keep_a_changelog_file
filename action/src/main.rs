@@ -188,17 +188,26 @@ impl Display for ValidationReport {
 
         if let ContentsValidation::Fail(diagnostics) = &self.contents_validation {
             writeln!(f)?;
-            writeln!(f, "    | Line | Column | Error |")?;
-            writeln!(f, "    |-----:|-------:|-------|")?;
+            writeln!(f, "<table>")?;
+            writeln!(f, "  <thead>")?;
+            writeln!(f, "    <tr>")?;
+            writeln!(f, "      <th align=\"right\">Line</th>")?;
+            writeln!(f, "      <th align=\"right\">Column</th>")?;
+            writeln!(f, "      <th>Error</th>")?;
+            writeln!(f, "    </tr>")?;
+            writeln!(f, "  </thead>")?;
+            writeln!(f, "  <tbody>")?;
+            
             for diagnostic in diagnostics {
-                writeln!(
-                    f,
-                    "    | {line} | {column} | <pre>{message}</pre> |",
-                    message = diagnostic.message,
-                    line = diagnostic.position.start.line,
-                    column = diagnostic.position.start.column
-                )?;
+                writeln!(f, "<tr>")?;
+                writeln!(f, "  <td align=\"right\">{line}</td>", line = diagnostic.position.start.line)?;
+                writeln!(f, "  <td align=\"right\">{column}</td>", column = diagnostic.position.start.column)?;
+                writeln!(f, "  <td align=\"right\"><pre>{message}</pre></td>", message = diagnostic.message)?;
+                writeln!(f, "</tr>")?;
             }
+            
+            writeln!(f, "  </tbody>")?;
+            writeln!(f, "</table>")?;
         }
 
         Ok(())
