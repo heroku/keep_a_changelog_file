@@ -212,7 +212,7 @@ impl Display for ValidationReport {
                 )?;
                 writeln!(
                     f,
-                    "  <td align=\"right\"><pre>{message}</pre></td>",
+                    "  <td><pre>{message}</pre></td>",
                     message = diagnostic.message
                 )?;
                 writeln!(f, "</tr>")?;
