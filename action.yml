@@ -1,0 +1,22 @@
+name: Validate Keep a Changelog Format
+description: Validates the given file matches the Keep a Changelog spec and reports any issues if not.
+
+# Define your inputs here.
+inputs:
+  changelog_files:
+    description: The changelog file(s) to check
+    required: false
+    default: "**/CHANGELOG.md"
+  validate_contents:
+    description: TODO
+    required: false
+    default: "true"
+  validate_unreleased:
+    description: TODO
+    required: false
+    default: "true"
+
+runs:
+  using: docker
+  image: Dockerfile
+  args: []

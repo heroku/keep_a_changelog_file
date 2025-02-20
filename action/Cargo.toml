@@ -1,0 +1,9 @@
+[package]
+name = "action"
+edition = "2021"
+publish = false
+
+[dependencies]
+bon = "3"
+glob = "0.3"
+keep_a_changelog_file = { path = ".." }

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Keep a Changelog Parser</title>
+    <link rel="shortcut icon" href="data:,"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+          rel="stylesheet">
+    <style>
+        h1 {
+            font-size: 33px;
+            font-family: "Open Sans", sans-serif;
+            font-weight: 300;
+            color: #ba3925;
+            text-rendering: optimizeLegibility;
+            line-height: 1em;
+            margin-bottom: 16px;
+        }
+
+        h2 {
+            color: #828282;
+            font-family: "Open Sans", sans-serif;
+            font-size: 22px;
+            font-weight: 300;
+            margin: 0 0 16px;
+        }
+
+        .playground {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .input, .output {
+            height: 400px;
+            margin: 0 5px;
+            padding: 0;
+            resize: none;
+        }
+
+        .input {
+            width: 75%;
+        }
+
+        .output {
+            width: 25%;
+        }
+
+        .editor {
+            height: calc(100% - 42px);
+            overflow: auto;
+            border: 1px solid black;
+        }
+
+        textarea {
+            width: 100%;
+            height: calc(100% - 46px);
+            border: 1px solid black;
+        }
+
+        .errors {
+            margin-top: 26px;
+        }
+
+        .errors ul {
+            padding: 0;
+            margin: 0;
+        }
+
+        .error {
+            background-color: #f9ecee;
+            list-style: none;
+            margin-bottom: 1em;
+            border-radius: 4px;
+            overflow: auto;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .error .left {
+            padding: calc(0.5em + 2px) 0.5em 0.5em 0.5em;
+            flex: 0 0 30px;
+            font-family: "JetBrains Mono", monospace;
+            text-rendering: optimizeLegibility;
+            font-size: 12px;
+            font-weight: 600;
+            background-color: #efc4cb;
+        }
+
+        .error .right {
+            padding: 0.5em;
+            flex: 1 1 auto;
+        }
+
+        pre {
+            margin: 0;
+        }
+
+        code {
+            font-family: "JetBrains Mono", monospace;
+            text-rendering: optimizeLegibility;
+            font-size: 12px;
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Keep a Changelog - Resilient Parsing</h1>
+</div>
+
+<div class="examples">
+    <h2>Examples</h2>
+    <p class="example-links"></p>
+</div>
+
+<div class="playground">
+    <div class="input">
+        <h2>Input Changelog</h2>
+        <div class="editor"></div>
+    </div>
+    <div class="output">
+        <h2>Output AST</h2>
+        <textarea wrap="off" readonly="true"></textarea>
+    </div>
+</div>
+
+<div class="errors">
+    <h2>Errors</h2>
+    <div class="list"></div>
+</div>
+
+<script type="module" src="./assets/main.js"></script>
+
+</body>
+</html>

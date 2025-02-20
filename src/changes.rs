@@ -21,10 +21,10 @@ impl Changes {
     pub(crate) fn add(&mut self, change_group: ChangeGroup, item: impl Into<String>) {
         self.0.entry(change_group).or_default().push(item.into());
     }
+}
 
-    pub(crate) fn from_iter<I: IntoIterator<Item = (ChangeGroup, Vec<String>)>>(
-        iterable: I,
-    ) -> Changes {
+impl FromIterator<(ChangeGroup, Vec<String>)> for Changes {
+    fn from_iter<I: IntoIterator<Item = (ChangeGroup, Vec<String>)>>(iterable: I) -> Self {
         Self(IndexMap::from_iter(iterable))
     }
 }
