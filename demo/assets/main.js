@@ -1,5 +1,4 @@
 import init, {get_errors, print_syntax_tree} from "./demo.js"
-import {findSample, getSamples, defaultText} from "./samples.js";
 import {EditorState} from '@codemirror/state'
 import {markdown} from '@codemirror/lang-markdown'
 import {
@@ -20,11 +19,64 @@ import {
     syntaxHighlighting
 } from "@codemirror/language";
 import {lintKeymap, linter, lintGutter} from "@codemirror/lint";
+import spec from '../examples/spec.md?raw'
+import nodejs from '../examples/nodejs.md?raw'
+import minimal from '../examples/minimal.md?raw'
+import missing_unreleased from '../examples/missing_unreleased.md?raw'
+import release_with_no_changes from '../examples/release_with_no_changes.md?raw'
+import changes_with_no_group from '../examples/changes_with_no_group.md?raw'
+import changes_group_typo from '../examples/changes_group_typo.md?raw'
+
+
+const EXAMPLES = [
+    {
+        id: 'keep-a-changelog',
+        title: 'Keep a Changelog',
+        text: spec
+    },
+    {
+        id: 'nodejs-engine',
+        title: "Node.js Engine CNB",
+        text: nodejs
+    },
+    {
+        id: 'minimal',
+        title: 'Minimal',
+        text: minimal
+    },
+    {
+        id: 'empty',
+        title: 'Empty',
+        text: ''
+    },
+    {
+        id: 'missing-unreleased',
+        title: 'Missing Unreleased',
+        text: missing_unreleased
+    },
+    {
+        id: 'release-with-no-changes',
+        title: 'Release with No Changes',
+        text: release_with_no_changes
+    },
+    {
+        id: 'changes-with-no-group',
+        title: 'Changes with No Group',
+        text: changes_with_no_group
+    },
+    {
+        id: 'change-group-typo',
+        title: 'Change Group Typo',
+        text: changes_group_typo
+    }
+]
+
+await main()
 
 async function main() {
     await init()
 
-    const sampleLinks = document.querySelector('.sample-links')
+    const exampleLinks = document.querySelector('.example-links')
     const output = document.querySelector(".output textarea")
     const errorList = document.querySelector(".errors .list")
 
@@ -118,8 +170,8 @@ async function main() {
 
     window.addEventListener("popstate", event => {
         if (event.state) {
-            const sample = findSample(document.location.hash)
-            replaceDoc(sample.text)
+            const example = findExample(document.location.hash)
+            replaceDoc(example.text)
         }
     })
 
@@ -132,32 +184,35 @@ async function main() {
         newDoc = true
     }
 
-    getSamples().forEach((sample, i, samples) => {
+    EXAMPLES.forEach((example, i, examples) => {
         const link = document.createElement('a')
-        link.href = `#${sample.id}`
-        link.textContent = sample.title
+        link.href = `#${example.id}`
+        link.textContent = example.title
         link.onclick = (event) => {
             event.preventDefault()
             if (document.location.hash !== link.hash) {
-                window.history.pushState(sample.id, "", link.href)
+                window.history.pushState(example.id, "", link.href)
             }
-            replaceDoc(sample.text)
+            replaceDoc(example.text)
         }
-        sampleLinks.appendChild(link)
-        if (i !== samples.length - 1) {
+        exampleLinks.appendChild(link)
+        if (i !== examples.length - 1) {
             const comma = document.createElement('span')
             comma.textContent = ', '
-            sampleLinks.appendChild(comma)
+            exampleLinks.appendChild(comma)
         }
     })
 
-    const sample = findSample(document.location.hash)
+    const example = findExample(document.location.hash)
 
     const editorView = new EditorView({
-        doc: sample ? sample.text : defaultText(),
+        doc: example ? example.text : spec,
         extensions: editorExtensions,
         parent: document.querySelector('.editor')
     })
 }
 
-await main()
+function findExample(idOrHash) {
+    const id = idOrHash.replace(/^#/, '')
+    return EXAMPLES.find(example => example.id === id)
+}

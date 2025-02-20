@@ -1,268 +1,4 @@
-const KEEP_A_CHANGELOG_TEXT = `# Changelog
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-
-### Added
-
-- v1.1 Brazilian Portuguese translation.
-- v1.1 German Translation
-- v1.1 Spanish translation.
-- v1.1 Italian translation.
-- v1.1 Polish translation.
-- v1.1 Ukrainian translation.
-
-### Changed
-
-- Use frontmatter title & description in each language version template
-- Replace broken OpenGraph image with an appropriately-sized Keep a Changelog 
-  image that will render properly (although in English for all languages)
-- Fix OpenGraph title & description for all languages so the title and 
-description when links are shared are language-appropriate
-
-### Removed
-
-- Trademark sign previously shown after the project description in version 
-0.3.0
-
-## [1.1.1] - 2023-03-05
-
-### Added
-
-- Arabic translation (#444).
-- v1.1 French translation.
-- v1.1 Dutch translation (#371).
-- v1.1 Russian translation (#410).
-- v1.1 Japanese translation (#363).
-- v1.1 Norwegian Bokmål translation (#383).
-- v1.1 "Inconsistent Changes" Turkish translation (#347).
-- Default to most recent versions available for each languages.
-- Display count of available translations (26 to date!).
-- Centralize all links into \`/data/links.json\` so they can be updated easily.
-
-### Fixed
-
-- Improve French translation (#377).
-- Improve id-ID translation (#416).
-- Improve Persian translation (#457).
-- Improve Russian translation (#408).
-- Improve Swedish title (#419).
-- Improve zh-CN translation (#359).
-- Improve French translation (#357).
-- Improve zh-TW translation (#360, #355).
-- Improve Spanish (es-ES) transltion (#362).
-- Foldout menu in Dutch translation (#371).
-- Missing periods at the end of each change (#451).
-- Fix missing logo in 1.1 pages.
-- Display notice when translation isn't for most recent version.
-- Various broken links, page versions, and indentations.
-
-### Changed
-
-- Upgrade dependencies: Ruby 3.2.1, Middleman, etc.
-
-### Removed
-
-- Unused normalize.css file.
-- Identical links assigned in each translation file.
-- Duplicate index file for the english version.
-
-## [1.1.0] - 2019-02-15
-
-### Added
-
-- Danish translation (#297).
-- Georgian translation from (#337).
-- Changelog inconsistency section in Bad Practices.
-
-### Fixed
-
-- Italian translation (#332).
-- Indonesian translation (#336).
-
-## [1.0.0] - 2017-06-20
-
-### Added
-
-- New visual identity by [@tylerfortune8](https://github.com/tylerfortune8).
-- Version navigation.
-- Links to latest released version in previous versions.
-- "Why keep a changelog?" section.
-- "Who needs a changelog?" section.
-- "How do I make a changelog?" section.
-- "Frequently Asked Questions" section.
-- New "Guiding Principles" sub-section to "How do I make a changelog?".
-- Simplified and Traditional Chinese translations from [@tianshuo](https://github.com/tianshuo).
-- German translation from [@mpbzh](https://github.com/mpbzh) & [@Art4](https://github.com/Art4).
-- Italian translation from [@azkidenz](https://github.com/azkidenz).
-- Swedish translation from [@magol](https://github.com/magol).
-- Turkish translation from [@emreerkan](https://github.com/emreerkan).
-- French translation from [@zapashcanon](https://github.com/zapashcanon).
-- Brazilian Portuguese translation from [@Webysther](https://github.com/Webysther).
-- Polish translation from [@amielucha](https://github.com/amielucha) & [@m-aciek](https://github.com/m-aciek).
-- Russian translation from [@aishek](https://github.com/aishek).
-- Czech translation from [@h4vry](https://github.com/h4vry).
-- Slovak translation from [@jkostolansky](https://github.com/jkostolansky).
-- Korean translation from [@pierceh89](https://github.com/pierceh89).
-- Croatian translation from [@porx](https://github.com/porx).
-- Persian translation from [@Hameds](https://github.com/Hameds).
-- Ukrainian translation from [@osadchyi-s](https://github.com/osadchyi-s).
-
-### Changed
-
-- Start using "changelog" over "change log" since it's the common usage.
-- Start versioning based on the current English version at 0.3.0 to help
-  translation authors keep things up-to-date.
-- Rewrite "What makes unicorns cry?" section.
-- Rewrite "Ignoring Deprecations" sub-section to clarify the ideal
-  scenario.
-- Improve "Commit log diffs" sub-section to further argument against
-  them.
-- Merge "Why can’t people just use a git log diff?" with "Commit log
-  diffs".
-- Fix typos in Simplified Chinese and Traditional Chinese translations.
-- Fix typos in Brazilian Portuguese translation.
-- Fix typos in Turkish translation.
-- Fix typos in Czech translation.
-- Fix typos in Swedish translation.
-- Improve phrasing in French translation.
-- Fix phrasing and spelling in German translation.
-
-### Removed
-
-- Section about "changelog" vs "CHANGELOG".
-
-## [0.3.0] - 2015-12-03
-
-### Added
-
-- RU translation from [@aishek](https://github.com/aishek).
-- pt-BR translation from [@tallesl](https://github.com/tallesl).
-- es-ES translation from [@ZeliosAriex](https://github.com/ZeliosAriex).
-
-## [0.2.0] - 2015-10-06
-
-### Changed
-
-- Remove exclusionary mentions of "open source" since this project can
-  benefit both "open" and "closed" source projects equally.
-
-## [0.1.0] - 2015-10-06
-
-### Added
-
-- Answer "Should you ever rewrite a change log?".
-
-### Changed
-
-- Improve argument against commit logs.
-- Start following [SemVer](https://semver.org) properly.
-
-## [0.0.8] - 2015-02-17
-
-### Changed
-
-- Update year to match in every README example.
-- Reluctantly stop making fun of Brits only, since most of the world
-  writes dates in a strange way.
-
-### Fixed
-
-- Fix typos in recent README changes.
-- Update outdated unreleased diff link.
-
-## [0.0.7] - 2015-02-16
-
-### Added
-
-- Link, and make it obvious that date format is ISO 8601.
-
-### Changed
-
-- Clarified the section on "Is there a standard change log format?".
-
-### Fixed
-
-- Fix Markdown links to tag comparison URL with footnote-style links.
-
-## [0.0.6] - 2014-12-12
-
-### Added
-
-- README section on "yanked" releases.
-
-## [0.0.5] - 2014-08-09
-
-### Added
-
-- Markdown links to version tags on release headings.
-- Unreleased section to gather unreleased changes and encourage note
-  keeping prior to releases.
-
-## [0.0.4] - 2014-08-09
-
-### Added
-
-- Better explanation of the difference between the file ("CHANGELOG")
-  and its function "the change log".
-
-### Changed
-
-- Refer to a "change log" instead of a "CHANGELOG" throughout the site
-  to differentiate between the file and the purpose of the file — the
-  logging of changes.
-
-### Removed
-
-- Remove empty sections from CHANGELOG, they occupy too much space and
-  create too much noise in the file. People will have to assume that the
-  missing sections were intentionally left out because they contained no
-  notable changes.
-
-## [0.0.3] - 2014-08-09
-
-### Added
-
-- "Why should I care?" section mentioning The Changelog podcast.
-
-## [0.0.2] - 2014-07-10
-
-### Added
-
-- Explanation of the recommended reverse chronological release ordering.
-
-## [0.0.1] - 2014-05-31
-
-### Added
-
-- This CHANGELOG file to hopefully serve as an evolving example of a
-  standardized open source project CHANGELOG.
-- CNAME file to enable GitHub Pages custom domain.
-- README now contains answers to common questions about CHANGELOGs.
-- Good examples and basic guidelines, including proper date formatting.
-- Counter-examples: "What makes unicorns cry?".
-
-[unreleased]: https://github.com/olivierlacan/keep-a-changelog/compare/v1.1.1...HEAD
-[1.1.1]: https://github.com/olivierlacan/keep-a-changelog/compare/v1.1.0...v1.1.1
-[1.1.0]: https://github.com/olivierlacan/keep-a-changelog/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.3.0...v1.0.0
-[0.3.0]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.8...v0.1.0
-[0.0.8]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.7...v0.0.8
-[0.0.7]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.6...v0.0.7
-[0.0.6]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.5...v0.0.6
-[0.0.5]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.4...v0.0.5
-[0.0.4]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.3...v0.0.4
-[0.0.3]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.2...v0.0.3
-[0.0.2]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.1...v0.0.2
-[0.0.1]: https://github.com/olivierlacan/keep-a-changelog/releases/tag/v0.0.1`
-
-const BUILDPACKS_NODEJS_ENGINE = `# Changelog
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -1016,185 +752,123 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add shellcheck to test suite ([#24](https://github.com/heroku/nodejs-engine-buildpack/pull/24))
 
 [unreleased]: https://github.com/heroku/buildpacks-nodejs/compare/v3.4.4...HEAD
+
 [3.4.4]: https://github.com/heroku/buildpacks-nodejs/compare/v3.4.3...v3.4.4
+
 [3.4.3]: https://github.com/heroku/buildpacks-nodejs/compare/v3.4.2...v3.4.3
+
 [3.4.2]: https://github.com/heroku/buildpacks-nodejs/compare/v3.4.1...v3.4.2
+
 [3.4.1]: https://github.com/heroku/buildpacks-nodejs/compare/v3.4.0...v3.4.1
+
 [3.4.0]: https://github.com/heroku/buildpacks-nodejs/compare/v3.3.5...v3.4.0
+
 [3.3.5]: https://github.com/heroku/buildpacks-nodejs/compare/v3.3.4...v3.3.5
+
 [3.3.4]: https://github.com/heroku/buildpacks-nodejs/compare/v3.3.3...v3.3.4
+
 [3.3.3]: https://github.com/heroku/buildpacks-nodejs/compare/v3.3.2...v3.3.3
+
 [3.3.2]: https://github.com/heroku/buildpacks-nodejs/compare/v3.3.1...v3.3.2
+
 [3.3.1]: https://github.com/heroku/buildpacks-nodejs/compare/v3.3.0...v3.3.1
+
 [3.3.0]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.18...v3.3.0
+
 [3.2.18]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.17...v3.2.18
+
 [3.2.17]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.16...v3.2.17
+
 [3.2.16]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.15...v3.2.16
+
 [3.2.15]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.14...v3.2.15
+
 [3.2.14]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.13...v3.2.14
+
 [3.2.13]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.12...v3.2.13
+
 [3.2.12]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.11...v3.2.12
+
 [3.2.11]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.10...v3.2.11
+
 [3.2.10]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.9...v3.2.10
+
 [3.2.9]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.8...v3.2.9
+
 [3.2.8]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.7...v3.2.8
+
 [3.2.7]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.6...v3.2.7
+
 [3.2.6]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.5...v3.2.6
+
 [3.2.5]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.4...v3.2.5
+
 [3.2.4]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.3...v3.2.4
+
 [3.2.3]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.2...v3.2.3
+
 [3.2.2]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.1...v3.2.2
+
 [3.2.1]: https://github.com/heroku/buildpacks-nodejs/compare/v3.2.0...v3.2.1
+
 [3.2.0]: https://github.com/heroku/buildpacks-nodejs/compare/v3.1.0...v3.2.0
+
 [3.1.0]: https://github.com/heroku/buildpacks-nodejs/compare/v3.0.6...v3.1.0
+
 [3.0.6]: https://github.com/heroku/buildpacks-nodejs/compare/v3.0.5...v3.0.6
+
 [3.0.5]: https://github.com/heroku/buildpacks-nodejs/compare/v3.0.4...v3.0.5
+
 [3.0.4]: https://github.com/heroku/buildpacks-nodejs/compare/v3.0.3...v3.0.4
+
 [3.0.3]: https://github.com/heroku/buildpacks-nodejs/compare/v3.0.2...v3.0.3
+
 [3.0.2]: https://github.com/heroku/buildpacks-nodejs/compare/v3.0.1...v3.0.2
+
 [3.0.1]: https://github.com/heroku/buildpacks-nodejs/compare/v3.0.0...v3.0.1
+
 [3.0.0]: https://github.com/heroku/buildpacks-nodejs/compare/v2.6.6...v3.0.0
+
 [2.6.6]: https://github.com/heroku/buildpacks-nodejs/compare/v2.6.5...v2.6.6
+
 [2.6.5]: https://github.com/heroku/buildpacks-nodejs/compare/v2.6.4...v2.6.5
+
 [2.6.4]: https://github.com/heroku/buildpacks-nodejs/compare/v2.6.3...v2.6.4
+
 [2.6.3]: https://github.com/heroku/buildpacks-nodejs/compare/v2.6.2...v2.6.3
+
 [2.6.2]: https://github.com/heroku/buildpacks-nodejs/compare/v2.6.1...v2.6.2
+
 [2.6.1]: https://github.com/heroku/buildpacks-nodejs/compare/v2.6.0...v2.6.1
+
 [2.6.0]: https://github.com/heroku/buildpacks-nodejs/compare/v2.5.0...v2.6.0
+
 [2.5.0]: https://github.com/heroku/buildpacks-nodejs/compare/v2.4.1...v2.5.0
+
 [2.4.1]: https://github.com/heroku/buildpacks-nodejs/compare/v2.4.0...v2.4.1
+
 [2.4.0]: https://github.com/heroku/buildpacks-nodejs/compare/v2.3.0...v2.4.0
+
 [2.3.0]: https://github.com/heroku/buildpacks-nodejs/compare/v2.2.0...v2.3.0
+
 [2.2.0]: https://github.com/heroku/buildpacks-nodejs/compare/v2.1.0...v2.2.0
+
 [2.1.0]: https://github.com/heroku/buildpacks-nodejs/compare/v2.0.0...v2.1.0
+
 [2.0.0]: https://github.com/heroku/buildpacks-nodejs/compare/v1.1.7...v2.0.0
+
 [1.1.7]: https://github.com/heroku/buildpacks-nodejs/compare/v1.1.6...v1.1.7
+
 [1.1.6]: https://github.com/heroku/buildpacks-nodejs/compare/v1.1.5...v1.1.6
+
 [1.1.5]: https://github.com/heroku/buildpacks-nodejs/compare/v1.1.4...v1.1.5
+
 [1.1.4]: https://github.com/heroku/buildpacks-nodejs/compare/v1.1.3...v1.1.4
+
 [1.1.3]: https://github.com/heroku/buildpacks-nodejs/compare/v1.1.2...v1.1.3
+
 [1.1.2]: https://github.com/heroku/buildpacks-nodejs/compare/v1.1.1...v1.1.2
+
 [1.1.1]: https://github.com/heroku/buildpacks-nodejs/compare/v1.1.0...v1.1.1
-[1.1.0]: https://github.com/heroku/buildpacks-nodejs/releases/tag/v1.1.0`
 
-const MINIMAL = `# Changelog
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-`
-
-const MISSING_UNRELEASED = `# Changelog
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [0.0.2] - 2014-07-10
-
-### Added
-
-- Explanation of the recommended reverse chronological release ordering.
-`
-
-const RELEASE_WITH_NO_CHANGES = `# Changelog
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## Unreleased
-
-## [0.0.2] - 2014-07-10
-`
-
-const CHANGES_WITH_NO_GROUP = `# Changelog
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## Unreleased
-
-## [0.0.2] - 2014-07-10
-
-- Explanation of the recommended reverse chronological release ordering.
-`
-
-const CHANGES_GROUP_TYPO = `# Changelog
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## Unreleased
-
-## [0.0.2] - 2014-07-10
-
-### Addedd
-
-- Explanation of the recommended reverse chronological release ordering.
-`
-
-const SAMPLES = [
-    {
-        id: 'keep-a-changelog',
-        title: 'Keep a Changelog',
-        text: KEEP_A_CHANGELOG_TEXT
-    },
-    {
-        id: 'nodejs-engine',
-        title: "Node.js Engine CNB",
-        text: BUILDPACKS_NODEJS_ENGINE
-    },
-    {
-        id: 'minimal',
-        title: 'Minimal',
-        text: MINIMAL
-    },
-    {
-        id: 'empty',
-        title: 'Empty',
-        text: ''
-    },
-    {
-        id: 'missing-unreleased',
-        title: 'Missing Unreleased',
-        text: MISSING_UNRELEASED
-    },
-    {
-        id: 'release-with-no-changes',
-        title: 'Release with No Changes',
-        text: RELEASE_WITH_NO_CHANGES
-    },
-    {
-        id: 'changes-with-no-group',
-        title: 'Changes with No Group',
-        text: CHANGES_WITH_NO_GROUP
-    },
-    {
-        id: 'change-group-typo',
-        title: 'Change Group Typo',
-        text: CHANGES_GROUP_TYPO
-    }
-]
-
-export function findSample(idOrHash) {
-    const id = idOrHash.replace(/^#/, '')
-    return SAMPLES.find(sample => sample.id === id)
-}
-
-export function defaultText() {
-    return KEEP_A_CHANGELOG_TEXT
-}
-
-export function getSamples() {
-    return SAMPLES
-}
+[1.1.0]: https://github.com/heroku/buildpacks-nodejs/releases/tag/v1.1.0
