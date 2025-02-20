@@ -197,15 +197,27 @@ impl Display for ValidationReport {
             writeln!(f, "    </tr>")?;
             writeln!(f, "  </thead>")?;
             writeln!(f, "  <tbody>")?;
-            
+
             for diagnostic in diagnostics {
                 writeln!(f, "<tr>")?;
-                writeln!(f, "  <td align=\"right\">{line}</td>", line = diagnostic.position.start.line)?;
-                writeln!(f, "  <td align=\"right\">{column}</td>", column = diagnostic.position.start.column)?;
-                writeln!(f, "  <td align=\"right\"><pre>{message}</pre></td>", message = diagnostic.message)?;
+                writeln!(
+                    f,
+                    "  <td align=\"right\">{line}</td>",
+                    line = diagnostic.position.start.line
+                )?;
+                writeln!(
+                    f,
+                    "  <td align=\"right\">{column}</td>",
+                    column = diagnostic.position.start.column
+                )?;
+                writeln!(
+                    f,
+                    "  <td align=\"right\"><pre>{message}</pre></td>",
+                    message = diagnostic.message
+                )?;
                 writeln!(f, "</tr>")?;
             }
-            
+
             writeln!(f, "  </tbody>")?;
             writeln!(f, "</table>")?;
         }
