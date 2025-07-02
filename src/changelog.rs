@@ -35,7 +35,7 @@ pub struct Changelog {
 }
 
 impl Changelog {
-    /// Moves all the changes from the unreleased section of the changelog into a new release which  
+    /// Moves all the changes from the unreleased section of the changelog into a new release which
     /// is added to the top of the changelog. The version, date, and other fields of the new release
     /// can be customized using the `promote_options` argument. If no date is given in the `promote_options`
     /// then the date will default to the current date.
