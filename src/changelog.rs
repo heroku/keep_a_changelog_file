@@ -361,7 +361,7 @@ fn parse_changelog(input: &str) -> Result<Changelog, ParseChangelogErrorInternal
                 match release_entry_type {
                     ReleaseHeaderType::Unreleased => {
                         unreleased = Some(Unreleased {
-                            changes: Changes::from_iter(changes.into_iter()),
+                            changes: Changes::from_iter(changes),
                             link: None,
                         });
                     }
@@ -373,7 +373,7 @@ fn parse_changelog(input: &str) -> Result<Changelog, ParseChangelogErrorInternal
                                 date,
                                 tag,
                                 link: None,
-                                changes: Changes::from_iter(changes.into_iter()),
+                                changes: Changes::from_iter(changes),
                             },
                         );
                     }
